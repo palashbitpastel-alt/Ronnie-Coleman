@@ -202,13 +202,6 @@
           sizes: '100vw',
           alt: section.settings.heading | default: 'Ronnie Coleman hero'
       }}
-    {%- else -%}
-      <img
-        src="{{ 'hero-bg-511af6.png' | asset_url }}"
-        alt="{{ section.settings.heading | default: 'Ronnie Coleman hero' | escape }}"
-        loading="lazy"
-        onerror="this.style.display='none'"
-      >
     {%- endif -%}
   </div>
 
