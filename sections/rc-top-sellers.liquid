@@ -2,14 +2,18 @@
   RC Top Sellers
   4-column product grid with circular blue radial gradient backgrounds behind each product image.
   Fonts: Helvetica Neue (section title), Barlow (labels, titles, prices).
-  Google Fonts: https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap
 {%- endcomment -%}
+
+{%- comment -%} Google Fonts load (browser dedupes when sibling sections also link this URL) {%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Dancing+Script:wght@400&display=swap">
 
 {%- style -%}
   .rc-top-sellers-{{ section.id }} {
     width: 100%;
     padding: 4rem 1.25rem;
-    background-color: #F6F8FB;
+    background-color: #FFFFFF;
     color: #222222;
   }
 
@@ -59,7 +63,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: radial-gradient(circle at 50% 50%, #011842 0%, rgba(1,16,43,0) 70%);
+    background: radial-gradient(circle at 50% 50%, #1A4083 0%, rgba(26,64,131,0) 70%);
     border-radius: 50%;
     overflow: hidden;
     margin-bottom: 1.25rem;

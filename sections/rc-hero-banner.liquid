@@ -2,9 +2,14 @@
   RC Hero Banner
   Full-width hero banner for Ronnie Coleman Signature Series homepage.
   Fonts: Helvetica Neue (headline), Barlow (body/eyebrow), Manderley (CTA button).
-  Manderley is a display font; if unavailable, Dancing Script is used as a visual fallback.
-  Google Fonts: https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Dancing+Script:wght@400&display=swap
+  Manderley is an Adobe Fonts display face; if unavailable, Dancing Script is loaded
+  from Google Fonts as the closest free visual substitute.
 {%- endcomment -%}
+
+{%- comment -%} Google Fonts load (guard: only first occurrence per page is honoured, browser dedupes by URL) {%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Dancing+Script:wght@400&display=swap">
 
 {%- style -%}
   .rc-hero-banner-{{ section.id }} {
