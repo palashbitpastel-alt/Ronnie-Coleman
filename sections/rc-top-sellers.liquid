@@ -1,0 +1,324 @@
+{%- comment -%}
+  RC Top Sellers
+  4-column product grid with circular blue radial gradient backgrounds behind each product image.
+  Fonts: Helvetica Neue (section title), Barlow (labels, titles, prices).
+  Google Fonts: https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap
+{%- endcomment -%}
+
+{%- style -%}
+  .rc-top-sellers-{{ section.id }} {
+    width: 100%;
+    padding: 4rem 1.25rem;
+    background-color: #F6F8FB;
+    color: #222222;
+  }
+
+  .rc-top-sellers-{{ section.id }} .rc-top-sellers__inner {
+    max-width: 80rem; /* 1280px */
+    margin: 0 auto;
+  }
+
+  .rc-top-sellers-{{ section.id }} .rc-top-sellers__title {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    font-size: 2rem; /* 32px */
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: #222222;
+    text-align: center;
+    margin: 0 0 2.5rem 0;
+  }
+
+  .rc-top-sellers-{{ section.id }} .rc-top-sellers__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  .rc-top-sellers-{{ section.id }} .rc-product-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1rem;
+    background-color: transparent;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.25s ease;
+  }
+
+  .rc-top-sellers-{{ section.id }} .rc-product-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .rc-top-sellers-{{ section.id }} .rc-product-card__media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 50% 50%, #011842 0%, rgba(1,16,43,0) 70%);
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+
+  .rc-top-sellers-{{ section.id }} .rc-product-card__image {
+    position: relative;
+    z-index: 1;
+    max-width: 70%;
+    max-height: 85%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .rc-top-sellers-{{ section.id }} .rc-product-card__brand {
+    font-family: "Barlow", sans-serif;
+    font-weight: 400;
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.4;
+    color: #222222;
+    margin: 0 0 0.25rem 0;
+  }
+
+  .rc-top-sellers-{{ section.id }} .rc-product-card__title {
+    font-family: "Barlow", sans-serif;
+    font-weight: 700;
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.3;
+    color: #222222;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .rc-top-sellers-{{ section.id }} .rc-product-card__price {
+    font-family: "Barlow", sans-serif;
+    font-weight: 600;
+    font-size: 1rem; /* 16px */
+    line-height: 1.4;
+    color: #222222;
+    margin: 0;
+  }
+
+  .rc-top-sellers-{{ section.id }} .rc-product-card__placeholder {
+    width: 70%;
+    height: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    font-family: "Barlow", sans-serif;
+    font-size: 0.875rem;
+    opacity: 0.6;
+  }
+
+  @media screen and (max-width: 989px) {
+    .rc-top-sellers-{{ section.id }} .rc-top-sellers__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .rc-top-sellers-{{ section.id }} {
+      padding: 2.5rem 1rem;
+    }
+
+    .rc-top-sellers-{{ section.id }} .rc-top-sellers__title {
+      font-size: 1.5rem; /* 24px */
+      margin-bottom: 1.75rem;
+    }
+
+    .rc-top-sellers-{{ section.id }} .rc-top-sellers__grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .rc-top-sellers-{{ section.id }} .rc-product-card__title {
+      font-size: 1rem;
+    }
+  }
+{%- endstyle -%}
+
+<section class="rc-top-sellers rc-top-sellers-{{ section.id }}" aria-label="{{ section.settings.heading | default: 'Top sellers' | escape }}">
+  <div class="rc-top-sellers__inner">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="rc-top-sellers__title">{{ section.settings.heading | escape }}</h2>
+    {%- endif -%}
+
+    <div class="rc-top-sellers__grid">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'product' -%}
+            {%- liquid
+              assign product = block.settings.product
+              assign fallback_title = block.settings.title_fallback
+              assign fallback_price = block.settings.price_fallback
+              assign fallback_brand = block.settings.brand_fallback
+              assign fallback_image = block.settings.image_fallback
+              assign card_link = '#'
+              if product != blank
+                assign card_link = product.url
+              elsif block.settings.product_link != blank
+                assign card_link = block.settings.product_link
+              endif
+            -%}
+
+            <a
+              class="rc-product-card"
+              href="{{ card_link }}"
+              {{ block.shopify_attributes }}
+            >
+              <div class="rc-product-card__media">
+                {%- if product != blank and product.featured_image != blank -%}
+                  {{
+                    product.featured_image
+                    | image_url: width: 600
+                    | image_tag:
+                      loading: 'lazy',
+                      class: 'rc-product-card__image',
+                      widths: '300, 400, 600, 800',
+                      sizes: '(min-width: 990px) 20vw, (min-width: 750px) 40vw, 90vw',
+                      alt: product.featured_image.alt | default: product.title
+                  }}
+                {%- elsif fallback_image != blank -%}
+                  {{
+                    fallback_image
+                    | image_url: width: 600
+                    | image_tag:
+                      loading: 'lazy',
+                      class: 'rc-product-card__image',
+                      widths: '300, 400, 600, 800',
+                      sizes: '(min-width: 990px) 20vw, (min-width: 750px) 40vw, 90vw',
+                      alt: fallback_title | default: 'Product image'
+                  }}
+                {%- else -%}
+                  <div class="rc-product-card__placeholder">{{ fallback_title | default: 'Product' | escape }}</div>
+                {%- endif -%}
+              </div>
+
+              <p class="rc-product-card__brand">{{ fallback_brand | default: 'Ronnie Coleman Signature Serie' | escape }}</p>
+
+              <h3 class="rc-product-card__title">
+                {%- if product != blank -%}
+                  {{ product.title | escape }}
+                {%- else -%}
+                  {{ fallback_title | escape }}
+                {%- endif -%}
+              </h3>
+
+              <p class="rc-product-card__price">
+                {%- if product != blank -%}
+                  From {{ product.price_min | money_with_currency }}
+                {%- else -%}
+                  From {{ fallback_price | escape }}
+                {%- endif -%}
+              </p>
+            </a>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "RC Top Sellers",
+  "tag": "section",
+  "class": "section rc-top-sellers-section",
+  "max_blocks": 4,
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section heading",
+      "default": "TOP SELLERS"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "url",
+          "id": "product_link",
+          "label": "Product link (if no product selected)"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_fallback",
+          "label": "Fallback image"
+        },
+        {
+          "type": "text",
+          "id": "brand_fallback",
+          "label": "Brand label",
+          "default": "Ronnie Coleman Signature Serie"
+        },
+        {
+          "type": "text",
+          "id": "title_fallback",
+          "label": "Fallback title",
+          "default": "Product title"
+        },
+        {
+          "type": "text",
+          "id": "price_fallback",
+          "label": "Fallback price",
+          "default": "$0.00 USD"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "RC Top Sellers",
+      "blocks": [
+        {
+          "type": "product",
+          "settings": {
+            "brand_fallback": "Ronnie Coleman Signature Serie",
+            "title_fallback": "YEAH BUDDY Pre-Workout",
+            "price_fallback": "$34.99 USD"
+          }
+        },
+        {
+          "type": "product",
+          "settings": {
+            "brand_fallback": "Ronnie Coleman Signature Serie",
+            "title_fallback": "Yeah Buddy Sport Pre-Workout",
+            "price_fallback": "$26.99 USD"
+          }
+        },
+        {
+          "type": "product",
+          "settings": {
+            "brand_fallback": "Ronnie Coleman Signature Serie",
+            "title_fallback": "L-Carnitine XS Liquid",
+            "price_fallback": "$34.99 USD"
+          }
+        },
+        {
+          "type": "product",
+          "settings": {
+            "brand_fallback": "Ronnie Coleman Signature Serie",
+            "title_fallback": "Creatine XS Unflavoured",
+            "price_fallback": "$49.99 USD"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
