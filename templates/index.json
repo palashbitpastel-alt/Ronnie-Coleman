@@ -194,48 +194,41 @@
     "rc_shop_by_category_MbAkaV": {
       "type": "rc-shop-by-category",
       "blocks": {
-        "category_bMxGgQ": {
-          "type": "category",
+        "collection_fBkBk7": {
+          "type": "collection",
           "settings": {
-            "title": "SUPPLEMENTS",
-            "cta_label": "Shop Now",
-            "link": ""
-          }
-        },
-        "category_6Je6Ax": {
-          "type": "category",
-          "settings": {
-            "title": "BUNDLES",
-            "cta_label": "Shop Now",
-            "link": ""
-          }
-        },
-        "category_L764Fy": {
-          "type": "category",
-          "settings": {
-            "title": "APPAREL",
-            "cta_label": "Shop Now",
-            "link": ""
+            "collection": "bracelets",
+            "custom_image": "shopify://shop_images/40330318-7693-4e5c-b9dc-143a58217b55_1.png",
+            "custom_title": "shop by goals",
+            "custom_link": "",
+            "cta_label": "Shop Now"
           }
         }
       },
       "block_order": [
-        "category_bMxGgQ",
-        "category_6Je6Ax",
-        "category_L764Fy"
+        "collection_fBkBk7"
       ],
       "name": "Shop by category (rc)",
       "settings": {
         "heading": "SHOP BY CATEGORY",
+        "heading_alignment": "left",
+        "columns_desktop": 4,
+        "columns_tablet": "2",
+        "columns_mobile": "1",
+        "image_ratio": "portrait",
+        "card_radius": 12,
+        "show_title": true,
+        "show_cta": true,
         "heading_font": "sans_serif_n7",
         "title_font": "sans_serif_n7",
         "cta_font": "sans_serif_n7",
-        "background_color": "#FFFFFF",
+        "background_color": "#ffffff",
         "heading_color": "#222222",
-        "tile_text_color": "#FFFFFF",
+        "tile_text_color": "#ffffff",
         "tile_overlay_color": "#000000",
-        "cta_background": "#1A4083",
-        "cta_text_color": "#FFFFFF",
+        "tile_overlay_opacity": 35,
+        "cta_background": "rgba(0,0,0,0)",
+        "cta_text_color": "#ffffff",
         "padding_top": 60,
         "padding_bottom": 60
       }
