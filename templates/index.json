@@ -442,18 +442,18 @@
     "image_banner_WgxTfm": {
       "type": "image-banner",
       "blocks": {
-        "heading_T366jx": {
-          "type": "heading",
-          "settings": {
-            "heading": "Check out the awesome stuff made by a legend!",
-            "heading_size": "h1"
-          }
-        },
         "text_7gTkjJ": {
           "type": "text",
           "settings": {
             "text": "Give customers details about the banner image(s) or content on the template.",
             "text_style": "body"
+          }
+        },
+        "heading_T366jx": {
+          "type": "heading",
+          "settings": {
+            "heading": "Check out the awesome stuff made by a legend!",
+            "heading_size": "h1"
           }
         },
         "buttons_FgY6UU": {
@@ -469,8 +469,8 @@
         }
       },
       "block_order": [
-        "heading_T366jx",
         "text_7gTkjJ",
+        "heading_T366jx",
         "buttons_FgY6UU"
       ],
       "name": "t:sections.image-banner.presets.name",
@@ -479,9 +479,9 @@
         "image_overlay_opacity": 0,
         "image_height": "medium",
         "desktop_content_position": "middle-right",
-        "show_text_box": true,
+        "show_text_box": false,
         "desktop_content_alignment": "left",
-        "color_scheme": "",
+        "color_scheme": "scheme-1",
         "image_behavior": "none",
         "mobile_content_alignment": "center",
         "stack_images_on_mobile": true,
