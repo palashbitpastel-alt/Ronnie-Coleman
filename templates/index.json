@@ -230,6 +230,7 @@
         "featured_collection_QpwmLx",
         "featured_collection_r6TgQC"
       ],
+      "disabled": true,
       "name": "t:sections.collection-list.presets.name",
       "settings": {
         "title": "Collections",
