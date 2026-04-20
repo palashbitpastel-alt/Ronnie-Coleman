@@ -1,5 +1,11 @@
 {%- liquid
   assign heading_text = section.settings.heading
+  assign heading_alignment = section.settings.heading_alignment
+  assign show_dividers = section.settings.show_dividers
+  assign columns_desktop = section.settings.columns_desktop | default: 4
+  assign columns_tablet = section.settings.columns_tablet | default: 2
+  assign columns_mobile = section.settings.columns_mobile | default: 1
+  assign image_ratio = section.settings.image_ratio
   assign cta_label = section.settings.cta_label
   assign cta_link = section.settings.cta_link
 
@@ -41,22 +47,26 @@
     --rc-glow-color: {{ section.settings.glow_color }};
     --rc-cta-bg: {{ section.settings.cta_background }};
     --rc-cta-text: {{ section.settings.cta_text_color }};
+    --rc-card-radius: {{ section.settings.card_radius }}px;
+    --rc-columns-desktop: {{ columns_desktop }};
+    --rc-columns-tablet: {{ columns_tablet }};
+    --rc-columns-mobile: {{ columns_mobile }};
     padding-top: {{ section.settings.padding_top }}px;
     padding-bottom: {{ section.settings.padding_bottom }}px;
   }
 {%- endstyle -%}
 
-<section class="section-rc-coleman-athletics-{{ section.id }} rc-coleman-athletics">
+<section class="section-rc-coleman-athletics-{{ section.id }} rc-coleman-athletics rc-coleman-athletics--align-{{ heading_alignment }} rc-coleman-athletics--ratio-{{ image_ratio }}{% if show_dividers %} rc-coleman-athletics--dividers{% endif %}">
   <div class="page-width rc-coleman-athletics__inner">
     {%- if heading_text != blank -%}
       <div class="rc-coleman-athletics__heading-row">
-        <span class="rc-coleman-athletics__line" aria-hidden="true"></span>
+        {%- if show_dividers -%}<span class="rc-coleman-athletics__line" aria-hidden="true"></span>{%- endif -%}
         <h2 class="rc-coleman-athletics__heading">{{ heading_text | escape }}</h2>
-        <span class="rc-coleman-athletics__line" aria-hidden="true"></span>
+        {%- if show_dividers -%}<span class="rc-coleman-athletics__line" aria-hidden="true"></span>{%- endif -%}
       </div>
     {%- endif -%}
 
-    <div class="rc-coleman-athletics__grid">
+    <ul class="rc-coleman-athletics__grid" role="list">
       {%- for block in section.blocks -%}
         {%- liquid
           assign card_link = block.settings.link | default: '#'
@@ -65,35 +75,41 @@
           assign card_title = block.settings.title
           assign card_price = block.settings.price_label
         -%}
-        <a href="{{ card_link }}" class="rc-coleman-athletics__card" {{ block.shopify_attributes }}>
-          <div class="rc-coleman-athletics__media">
-            <span class="rc-coleman-athletics__glow" aria-hidden="true"></span>
-            {%- if card_image != blank -%}
-              {{ card_image | image_url: width: 800 | image_tag:
-                loading: 'lazy',
-                widths: '200,300,400,600,800',
-                sizes: '(min-width: 990px) 25vw, (min-width: 750px) 50vw, 100vw',
-                alt: card_title,
-                class: 'rc-coleman-athletics__image'
-              }}
-            {%- endif -%}
-          </div>
-          <div class="rc-coleman-athletics__body">
-            {%- if card_eyebrow != blank -%}
-              <p class="rc-coleman-athletics__eyebrow">{{ card_eyebrow | escape }}</p>
-            {%- endif -%}
-            <div class="rc-coleman-athletics__meta">
-              {%- if card_title != blank -%}
-                <h3 class="rc-coleman-athletics__title">{{ card_title | escape }}</h3>
-              {%- endif -%}
-              {%- if card_price != blank -%}
-                <span class="rc-coleman-athletics__price">{{ card_price | escape }}</span>
+        <li class="rc-coleman-athletics__item" {{ block.shopify_attributes }}>
+          <a href="{{ card_link }}" class="rc-coleman-athletics__card">
+            <div class="rc-coleman-athletics__media">
+              <span class="rc-coleman-athletics__glow" aria-hidden="true"></span>
+              {%- if card_image != blank -%}
+                {{ card_image | image_url: width: 800 | image_tag:
+                  loading: 'lazy',
+                  widths: '200,300,400,600,800',
+                  sizes: '(min-width: 990px) calc(100vw / var(--rc-columns-desktop)), (min-width: 750px) calc(100vw / var(--rc-columns-tablet)), 100vw',
+                  alt: card_title,
+                  class: 'rc-coleman-athletics__image'
+                }}
+              {%- else -%}
+                <div class="rc-coleman-athletics__placeholder" aria-hidden="true">
+                  {{ 'product-apparel-1' | placeholder_svg_tag: 'rc-coleman-athletics__placeholder-svg' }}
+                </div>
               {%- endif -%}
             </div>
-          </div>
-        </a>
+            <div class="rc-coleman-athletics__body">
+              {%- if card_eyebrow != blank -%}
+                <p class="rc-coleman-athletics__eyebrow">{{ card_eyebrow | escape }}</p>
+              {%- endif -%}
+              <div class="rc-coleman-athletics__meta">
+                {%- if card_title != blank -%}
+                  <h3 class="rc-coleman-athletics__title">{{ card_title | escape }}</h3>
+                {%- endif -%}
+                {%- if card_price != blank -%}
+                  <span class="rc-coleman-athletics__price">{{ card_price | escape }}</span>
+                {%- endif -%}
+              </div>
+            </div>
+          </a>
+        </li>
       {%- endfor -%}
-    </div>
+    </ul>
 
     {%- if cta_label != blank -%}
       <div class="rc-coleman-athletics__cta-wrap">
@@ -125,6 +141,10 @@
     width: 100%;
   }
 
+  .section-rc-coleman-athletics--align-left .rc-coleman-athletics__heading-row { justify-content: flex-start; }
+  .section-rc-coleman-athletics--align-center .rc-coleman-athletics__heading-row { justify-content: center; }
+  .section-rc-coleman-athletics--align-right .rc-coleman-athletics__heading-row { justify-content: flex-end; }
+
   .section-rc-coleman-athletics-{{ section.id }} .rc-coleman-athletics__line {
     flex: 1 1 auto;
     height: 1px;
@@ -146,22 +166,34 @@
   }
 
   .section-rc-coleman-athletics-{{ section.id }} .rc-coleman-athletics__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--rc-columns-desktop, 4), minmax(0, 1fr));
     gap: 24px;
+  }
+
+  .section-rc-coleman-athletics-{{ section.id }} .rc-coleman-athletics__item {
+    display: flex;
   }
 
   .section-rc-coleman-athletics-{{ section.id }} .rc-coleman-athletics__card {
     display: flex;
     flex-direction: column;
+    width: 100%;
     background-color: var(--rc-card-bg, #F6F8FB);
-    border-radius: 8px;
+    border-radius: var(--rc-card-radius, 8px);
     overflow: hidden;
     text-decoration: none;
     color: inherit;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
-    aspect-ratio: 428 / 480;
   }
+
+  .section-rc-coleman-athletics--ratio-adapt .rc-coleman-athletics__card { aspect-ratio: 428 / 480; }
+  .section-rc-coleman-athletics--ratio-square .rc-coleman-athletics__media { aspect-ratio: 1 / 1; }
+  .section-rc-coleman-athletics--ratio-portrait .rc-coleman-athletics__media { aspect-ratio: 3 / 4; }
+  .section-rc-coleman-athletics--ratio-landscape .rc-coleman-athletics__media { aspect-ratio: 4 / 3; }
 
   .section-rc-coleman-athletics-{{ section.id }} .rc-coleman-athletics__card:hover,
   .section-rc-coleman-athletics-{{ section.id }} .rc-coleman-athletics__card:focus-visible {
@@ -199,6 +231,23 @@
     margin: 10% auto 0;
     object-fit: contain;
     transition: transform 0.4s ease;
+  }
+
+  .section-rc-coleman-athletics-{{ section.id }} .rc-coleman-athletics__placeholder {
+    position: relative;
+    z-index: 1;
+    width: 80%;
+    height: 80%;
+    margin: 10% auto 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .section-rc-coleman-athletics-{{ section.id }} .rc-coleman-athletics__placeholder-svg {
+    width: 100%;
+    height: 100%;
+    fill: rgba(34, 34, 34, 0.2);
   }
 
   .section-rc-coleman-athletics-{{ section.id }} .rc-coleman-athletics__card:hover .rc-coleman-athletics__image {
@@ -289,16 +338,11 @@
     outline: none;
   }
 
-  .section-rc-coleman-athletics-{{ section.id }} .rc-coleman-athletics__cta:focus-visible {
-    box-shadow: 0 0 0 3px rgba(26, 64, 131, 0.35);
-  }
-
   @media screen and (max-width: 989px) {
     .section-rc-coleman-athletics-{{ section.id }} .rc-coleman-athletics__grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(var(--rc-columns-tablet, 2), minmax(0, 1fr));
       gap: 16px;
     }
-
     .section-rc-coleman-athletics-{{ section.id }} .rc-coleman-athletics__heading-row {
       gap: 16px;
     }
@@ -308,20 +352,19 @@
     .section-rc-coleman-athletics-{{ section.id }} .rc-coleman-athletics__inner {
       gap: 24px;
     }
-
+    .section-rc-coleman-athletics-{{ section.id }} .rc-coleman-athletics__grid {
+      grid-template-columns: repeat(var(--rc-columns-mobile, 1), minmax(0, 1fr));
+    }
     .section-rc-coleman-athletics-{{ section.id }} .rc-coleman-athletics__body {
       padding: 14px 16px 20px;
     }
-
     .section-rc-coleman-athletics-{{ section.id }} .rc-coleman-athletics__title,
     .section-rc-coleman-athletics-{{ section.id }} .rc-coleman-athletics__price {
       font-size: 15px;
     }
-
     .section-rc-coleman-athletics-{{ section.id }} .rc-coleman-athletics__eyebrow {
       font-size: 12px;
     }
-
     .section-rc-coleman-athletics-{{ section.id }} .rc-coleman-athletics__cta {
       padding: 14px 20px;
       font-size: 14px;
@@ -352,13 +395,86 @@
   "disabled_on": {
     "groups": ["header", "footer"]
   },
-  "max_blocks": 8,
+  "max_blocks": 12,
   "settings": [
     {
       "type": "text",
       "id": "heading",
       "label": "Heading",
       "default": "COLEMAN ATHLETICS"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Heading alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dividers",
+      "label": "Show divider lines beside heading",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns_tablet",
+      "label": "Columns on tablet",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        { "value": "adapt", "label": "Adapt to card" },
+        { "value": "square", "label": "Square (1:1)" },
+        { "value": "portrait", "label": "Portrait (3:4)" },
+        { "value": "landscape", "label": "Landscape (4:3)" }
+      ],
+      "default": "adapt"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card corner radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
     },
     {
       "type": "header",
@@ -527,34 +643,10 @@
       "name": "Coleman Athletics (rc)",
       "category": "Product",
       "blocks": [
-        {
-          "type": "product",
-          "settings": {
-            "title": "LIGHT WEIGHT BABY T-shirt",
-            "price_label": "From $39.99"
-          }
-        },
-        {
-          "type": "product",
-          "settings": {
-            "title": "LIGHT WEIGHT BABY Hoodie",
-            "price_label": "From $79.99"
-          }
-        },
-        {
-          "type": "product",
-          "settings": {
-            "title": "LWB \"Blurred Lines\" Hoodie",
-            "price_label": "From $79.99"
-          }
-        },
-        {
-          "type": "product",
-          "settings": {
-            "title": "YEAH BUDDY™ Hoodie",
-            "price_label": "From $79.99"
-          }
-        }
+        { "type": "product", "settings": { "title": "LIGHT WEIGHT BABY T-shirt", "price_label": "From $39.99" } },
+        { "type": "product", "settings": { "title": "LIGHT WEIGHT BABY Hoodie", "price_label": "From $79.99" } },
+        { "type": "product", "settings": { "title": "LWB \"Blurred Lines\" Hoodie", "price_label": "From $79.99" } },
+        { "type": "product", "settings": { "title": "YEAH BUDDY™ Hoodie", "price_label": "From $79.99" } }
       ]
     }
   ]

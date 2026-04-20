@@ -1,5 +1,12 @@
 {%- liquid
   assign heading_text = section.settings.heading
+  assign heading_alignment = section.settings.heading_alignment
+  assign columns_desktop = section.settings.columns_desktop | default: 4
+  assign columns_tablet = section.settings.columns_tablet | default: 2
+  assign columns_mobile = section.settings.columns_mobile | default: 1
+  assign image_ratio = section.settings.image_ratio
+  assign show_title = section.settings.show_title
+  assign show_cta = section.settings.show_cta
 
   assign heading_font = section.settings.heading_font
   assign title_font = section.settings.title_font
@@ -25,56 +32,87 @@
     --rc-heading-color: {{ section.settings.heading_color }};
     --rc-tile-text: {{ section.settings.tile_text_color }};
     --rc-tile-overlay: {{ section.settings.tile_overlay_color }};
+    --rc-tile-overlay-opacity: {{ section.settings.tile_overlay_opacity | divided_by: 100.0 }};
     --rc-cta-bg: {{ section.settings.cta_background }};
     --rc-cta-text: {{ section.settings.cta_text_color }};
+    --rc-card-radius: {{ section.settings.card_radius }}px;
+    --rc-columns-desktop: {{ columns_desktop }};
+    --rc-columns-tablet: {{ columns_tablet }};
+    --rc-columns-mobile: {{ columns_mobile }};
     padding-top: {{ section.settings.padding_top }}px;
     padding-bottom: {{ section.settings.padding_bottom }}px;
   }
 {%- endstyle -%}
 
-<section class="section-rc-shop-by-category-{{ section.id }} rc-shop-by-category">
+<section class="section-rc-shop-by-category-{{ section.id }} rc-shop-by-category rc-shop-by-category--align-{{ heading_alignment }} rc-shop-by-category--ratio-{{ image_ratio }}">
   <div class="page-width rc-shop-by-category__inner">
     {%- if heading_text != blank -%}
       <h2 class="rc-shop-by-category__heading">{{ heading_text | escape }}</h2>
     {%- endif -%}
 
-    <div class="rc-shop-by-category__list">
+    <ul class="rc-shop-by-category__grid" role="list">
       {%- for block in section.blocks -%}
         {%- liquid
-          assign link = block.settings.link | default: '#'
-          assign image = block.settings.image
-          assign title = block.settings.title
+          assign block_collection = block.settings.collection
+          assign custom_image = block.settings.custom_image
+          assign custom_title = block.settings.custom_title
+          assign custom_link = block.settings.custom_link
           assign cta_label = block.settings.cta_label
+
+          assign tile_title = custom_title
+          if tile_title == blank and block_collection != blank
+            assign tile_title = block_collection.title
+          endif
+
+          assign tile_link = custom_link
+          if tile_link == blank and block_collection != blank
+            assign tile_link = block_collection.url
+          endif
+          if tile_link == blank
+            assign tile_link = '#'
+          endif
+
+          assign tile_image = custom_image
+          if tile_image == blank and block_collection != blank
+            assign tile_image = block_collection.featured_image
+          endif
         -%}
-        <a href="{{ link }}" class="rc-shop-by-category__tile" {{ block.shopify_attributes }}>
-          <div class="rc-shop-by-category__media">
-            {%- if image != blank -%}
-              {{ image | image_url: width: 2400 | image_tag:
-                loading: 'lazy',
-                widths: '600,900,1200,1800,2400',
-                sizes: '(min-width: 1200px) 1466px, 100vw',
-                alt: title,
-                class: 'rc-shop-by-category__image'
-              }}
-            {%- endif -%}
-            <span class="rc-shop-by-category__overlay" aria-hidden="true"></span>
-          </div>
-          <div class="rc-shop-by-category__content">
-            {%- if title != blank -%}
-              <h3 class="rc-shop-by-category__title">{{ title | escape }}</h3>
-            {%- endif -%}
-            {%- if cta_label != blank -%}
-              <span class="rc-shop-by-category__cta">
-                <span>{{ cta_label | escape }}</span>
-                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
-                  <path d="M5 12h14M13 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </span>
-            {%- endif -%}
-          </div>
-        </a>
+        <li class="rc-shop-by-category__item" {{ block.shopify_attributes }}>
+          <a href="{{ tile_link }}" class="rc-shop-by-category__tile">
+            <div class="rc-shop-by-category__media">
+              {%- if tile_image != blank -%}
+                {{ tile_image | image_url: width: 1200 | image_tag:
+                  loading: 'lazy',
+                  widths: '300,500,700,900,1200',
+                  sizes: '(min-width: 990px) calc(100vw / var(--rc-columns-desktop)), (min-width: 750px) calc(100vw / var(--rc-columns-tablet)), 100vw',
+                  alt: tile_title,
+                  class: 'rc-shop-by-category__image'
+                }}
+              {%- else -%}
+                <div class="rc-shop-by-category__placeholder" aria-hidden="true">
+                  {{ 'collection-1' | placeholder_svg_tag: 'rc-shop-by-category__placeholder-svg' }}
+                </div>
+              {%- endif -%}
+              <span class="rc-shop-by-category__overlay" aria-hidden="true"></span>
+
+              {%- if show_title and tile_title != blank -%}
+                <div class="rc-shop-by-category__content">
+                  <h3 class="rc-shop-by-category__title">{{ tile_title | escape }}</h3>
+                  {%- if show_cta and cta_label != blank -%}
+                    <span class="rc-shop-by-category__cta">
+                      <span>{{ cta_label | escape }}</span>
+                      <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false">
+                        <path d="M5 12h14M13 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </span>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            </div>
+          </a>
+        </li>
       {%- endfor -%}
-    </div>
+    </ul>
   </div>
 </section>
 
@@ -101,22 +139,31 @@
     letter-spacing: -0.03em;
     text-transform: uppercase;
     color: var(--rc-heading-color, #222222);
-    text-align: left;
   }
 
-  .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__list {
+  .section-rc-shop-by-category--align-left .rc-shop-by-category__heading { text-align: left; }
+  .section-rc-shop-by-category--align-center .rc-shop-by-category__heading { text-align: center; }
+  .section-rc-shop-by-category--align-right .rc-shop-by-category__heading { text-align: right; }
+
+  .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(var(--rc-columns-desktop, 4), minmax(0, 1fr));
+    gap: 24px;
+    width: 100%;
+  }
+
+  .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__item {
     display: flex;
-    flex-direction: column;
-    gap: 16px;
   }
 
   .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__tile {
     position: relative;
     display: flex;
-    align-items: center;
-    aspect-ratio: 1466 / 160;
-    min-height: 120px;
-    border-radius: 12px;
+    width: 100%;
+    border-radius: var(--rc-card-radius, 12px);
     overflow: hidden;
     text-decoration: none;
     color: inherit;
@@ -126,16 +173,22 @@
 
   .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__tile:hover,
   .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__tile:focus-visible {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
     outline: none;
   }
 
   .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__media {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
+    position: relative;
+    width: 100%;
+    overflow: hidden;
   }
+
+  .section-rc-shop-by-category--ratio-adapt .rc-shop-by-category__media { aspect-ratio: auto; min-height: 280px; }
+  .section-rc-shop-by-category--ratio-square .rc-shop-by-category__media { aspect-ratio: 1 / 1; }
+  .section-rc-shop-by-category--ratio-portrait .rc-shop-by-category__media { aspect-ratio: 3 / 4; }
+  .section-rc-shop-by-category--ratio-landscape .rc-shop-by-category__media { aspect-ratio: 16 / 9; }
+  .section-rc-shop-by-category--ratio-wide .rc-shop-by-category__media { aspect-ratio: 1466 / 160; min-height: 120px; }
 
   .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__image {
     display: block;
@@ -147,25 +200,41 @@
   }
 
   .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__tile:hover .rc-shop-by-category__image {
-    transform: scale(1.03);
+    transform: scale(1.04);
+  }
+
+  .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: #EEF1F6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__placeholder-svg {
+    width: 100%;
+    height: 100%;
+    fill: rgba(34, 34, 34, 0.25);
   }
 
   .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, var(--rc-tile-overlay, rgba(0, 0, 0, 0.55)) 0%, rgba(0, 0, 0, 0.15) 60%, rgba(0, 0, 0, 0) 100%);
+    background-color: var(--rc-tile-overlay, #000000);
+    opacity: var(--rc-tile-overlay-opacity, 0.35);
     pointer-events: none;
   }
 
   .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__content {
-    position: relative;
+    position: absolute;
+    inset: 0;
     z-index: 1;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-    width: 100%;
-    padding: 28px 48px;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 28px;
     color: var(--rc-tile-text, #FFFFFF);
   }
 
@@ -174,7 +243,7 @@
     font-family: var(--rc-title-family);
     font-weight: var(--rc-title-weight);
     font-style: var(--rc-title-style);
-    font-size: clamp(22px, 2.08vw, 32px);
+    font-size: clamp(18px, 1.5vw, 24px);
     line-height: 1.1;
     letter-spacing: -0.02em;
     text-transform: uppercase;
@@ -184,44 +253,47 @@
   .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__cta {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 14px 28px;
+    gap: 8px;
+    padding: 10px 18px;
     background-color: var(--rc-cta-bg, #1A4083);
     color: var(--rc-cta-text, #FFFFFF);
     border-radius: 999px;
     font-family: var(--rc-cta-family);
     font-weight: var(--rc-cta-weight);
     font-style: var(--rc-cta-style);
-    font-size: 14px;
+    font-size: 12px;
     line-height: 1;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    flex: 0 0 auto;
-    transition: filter 0.2s ease, transform 0.2s ease;
+    width: max-content;
+    transition: filter 0.2s ease;
   }
 
   .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__tile:hover .rc-shop-by-category__cta {
-    filter: brightness(1.12);
+    filter: brightness(1.15);
+  }
+
+  @media screen and (max-width: 989px) {
+    .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__grid {
+      grid-template-columns: repeat(var(--rc-columns-tablet, 2), minmax(0, 1fr));
+      gap: 16px;
+    }
+    .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__content {
+      padding: 18px;
+    }
   }
 
   @media screen and (max-width: 749px) {
-    .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__tile {
-      aspect-ratio: auto;
-      min-height: 160px;
+    .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__grid {
+      grid-template-columns: repeat(var(--rc-columns-mobile, 1), minmax(0, 1fr));
+      gap: 12px;
     }
-    .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__content {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 14px;
-      padding: 22px;
-    }
-    .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__overlay {
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.7) 100%);
+    .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__title {
+      font-size: 16px;
     }
     .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__cta {
-      padding: 12px 22px;
-      font-size: 13px;
+      font-size: 11px;
+      padding: 8px 14px;
     }
   }
 
@@ -246,13 +318,93 @@
   "disabled_on": {
     "groups": ["header", "footer"]
   },
-  "max_blocks": 6,
+  "max_blocks": 12,
   "settings": [
     {
       "type": "text",
       "id": "heading",
       "label": "Heading",
       "default": "SHOP BY CATEGORY"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Heading alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns_tablet",
+      "label": "Columns on tablet",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        { "value": "adapt", "label": "Adapt to image" },
+        { "value": "square", "label": "Square (1:1)" },
+        { "value": "portrait", "label": "Portrait (3:4)" },
+        { "value": "landscape", "label": "Landscape (16:9)" },
+        { "value": "wide", "label": "Wide banner (1466:160)" }
+      ],
+      "default": "portrait"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card corner radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show title over image",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Show \"Shop now\" pill",
+      "default": true
     },
     {
       "type": "header",
@@ -301,8 +453,18 @@
     {
       "type": "color",
       "id": "tile_overlay_color",
-      "label": "Tile overlay",
+      "label": "Tile overlay color",
       "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "tile_overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "default": 35
     },
     {
       "type": "color",
@@ -343,30 +505,42 @@
   ],
   "blocks": [
     {
-      "type": "category",
-      "name": "Category tile",
+      "type": "collection",
+      "name": "Collection tile",
       "settings": [
         {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection",
+          "info": "Uses the collection's title, featured image, and URL."
+        },
+        {
+          "type": "header",
+          "content": "Overrides"
+        },
+        {
           "type": "image_picker",
-          "id": "image",
-          "label": "Background image"
+          "id": "custom_image",
+          "label": "Custom image",
+          "info": "Overrides the collection's featured image."
         },
         {
           "type": "text",
-          "id": "title",
-          "label": "Title",
-          "default": "SUPPLEMENTS"
+          "id": "custom_title",
+          "label": "Custom title",
+          "info": "Overrides the collection title."
+        },
+        {
+          "type": "url",
+          "id": "custom_link",
+          "label": "Custom link",
+          "info": "Overrides the collection URL."
         },
         {
           "type": "text",
           "id": "cta_label",
           "label": "Button label",
           "default": "Shop Now"
-        },
-        {
-          "type": "url",
-          "id": "link",
-          "label": "Link"
         }
       ]
     }
@@ -374,29 +548,16 @@
   "presets": [
     {
       "name": "Shop by category (rc)",
-      "category": "Image",
+      "category": "Collection",
+      "settings": {
+        "columns_desktop": 4,
+        "image_ratio": "portrait"
+      },
       "blocks": [
-        {
-          "type": "category",
-          "settings": {
-            "title": "SUPPLEMENTS",
-            "cta_label": "Shop Now"
-          }
-        },
-        {
-          "type": "category",
-          "settings": {
-            "title": "BUNDLES",
-            "cta_label": "Shop Now"
-          }
-        },
-        {
-          "type": "category",
-          "settings": {
-            "title": "APPAREL",
-            "cta_label": "Shop Now"
-          }
-        }
+        { "type": "collection", "settings": { "custom_title": "SUPPLEMENTS" } },
+        { "type": "collection", "settings": { "custom_title": "BUNDLES" } },
+        { "type": "collection", "settings": { "custom_title": "APPAREL" } },
+        { "type": "collection", "settings": { "custom_title": "ACCESSORIES" } }
       ]
     }
   ]

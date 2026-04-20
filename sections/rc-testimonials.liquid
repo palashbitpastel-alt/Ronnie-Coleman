@@ -1,6 +1,13 @@
 {%- liquid
   assign heading_text = section.settings.heading
   assign subheading_text = section.settings.subheading
+  assign heading_alignment = section.settings.heading_alignment
+  assign content_alignment = section.settings.content_alignment
+  assign columns_desktop = section.settings.columns_desktop | default: 3
+  assign columns_tablet = section.settings.columns_tablet | default: 2
+  assign columns_mobile = section.settings.columns_mobile | default: 1
+  assign show_stars = section.settings.show_stars
+  assign show_avatars = section.settings.show_avatars
   assign cta_label = section.settings.cta_label
   assign cta_link = section.settings.cta_link
 
@@ -34,14 +41,18 @@
     --rc-text-color: {{ section.settings.text_color }};
     --rc-star-color: {{ section.settings.star_color }};
     --rc-card-bg: {{ section.settings.card_background }};
+    --rc-card-radius: {{ section.settings.card_radius }}px;
     --rc-cta-bg: {{ section.settings.cta_background }};
     --rc-cta-text: {{ section.settings.cta_text_color }};
+    --rc-columns-desktop: {{ columns_desktop }};
+    --rc-columns-tablet: {{ columns_tablet }};
+    --rc-columns-mobile: {{ columns_mobile }};
     padding-top: {{ section.settings.padding_top }}px;
     padding-bottom: {{ section.settings.padding_bottom }}px;
   }
 {%- endstyle -%}
 
-<section class="section-rc-testimonials-{{ section.id }} rc-testimonials">
+<section class="section-rc-testimonials-{{ section.id }} rc-testimonials rc-testimonials--heading-{{ heading_alignment }} rc-testimonials--content-{{ content_alignment }}">
   <div class="page-width rc-testimonials__inner">
     <header class="rc-testimonials__header">
       {%- if heading_text != blank -%}
@@ -52,7 +63,7 @@
       {%- endif -%}
     </header>
 
-    <div class="rc-testimonials__grid">
+    <ul class="rc-testimonials__grid" role="list">
       {%- for block in section.blocks -%}
         {%- liquid
           assign stars = block.settings.rating | default: 5
@@ -60,50 +71,56 @@
           assign name = block.settings.name
           assign avatar = block.settings.avatar
         -%}
-        <article class="rc-testimonials__card" {{ block.shopify_attributes }}>
-          <div class="rc-testimonials__stars" aria-label="Rated {{ stars }} out of 5">
-            {%- for i in (1..5) -%}
-              {%- if i <= stars -%}
-                <svg class="rc-testimonials__star rc-testimonials__star--filled" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-                  <path d="M12 2.5l2.95 5.98 6.6.96-4.78 4.66 1.13 6.58L12 17.58l-5.9 3.1 1.13-6.58L2.45 9.44l6.6-.96L12 2.5z" fill="currentColor"/>
-                </svg>
-              {%- else -%}
-                <svg class="rc-testimonials__star rc-testimonials__star--empty" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-                  <path d="M12 2.5l2.95 5.98 6.6.96-4.78 4.66 1.13 6.58L12 17.58l-5.9 3.1 1.13-6.58L2.45 9.44l6.6-.96L12 2.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-                </svg>
-              {%- endif -%}
-            {%- endfor -%}
-          </div>
-
-          {%- if quote != blank -%}
-            <blockquote class="rc-testimonials__quote">{{ quote }}</blockquote>
-          {%- endif -%}
-
-          <footer class="rc-testimonials__person">
-            <span class="rc-testimonials__avatar">
-              {%- if avatar != blank -%}
-                {{ avatar | image_url: width: 180 | image_tag:
-                  loading: 'lazy',
-                  widths: '90,180',
-                  sizes: '90px',
-                  alt: name,
-                  class: 'rc-testimonials__avatar-image'
-                }}
-              {%- else -%}
-                <svg viewBox="0 0 90 90" width="90" height="90" aria-hidden="true" focusable="false">
-                  <circle cx="45" cy="45" r="45" fill="#E3E7EE"/>
-                  <circle cx="45" cy="36" r="16" fill="#B9C1CC"/>
-                  <path d="M15 80c4-16 16-24 30-24s26 8 30 24" fill="#B9C1CC"/>
-                </svg>
-              {%- endif -%}
-            </span>
-            {%- if name != blank -%}
-              <span class="rc-testimonials__name">{{ name | escape }}</span>
+        <li class="rc-testimonials__item" {{ block.shopify_attributes }}>
+          <article class="rc-testimonials__card">
+            {%- if show_stars -%}
+              <div class="rc-testimonials__stars" aria-label="Rated {{ stars }} out of 5">
+                {%- for i in (1..5) -%}
+                  {%- if i <= stars -%}
+                    <svg class="rc-testimonials__star rc-testimonials__star--filled" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+                      <path d="M12 2.5l2.95 5.98 6.6.96-4.78 4.66 1.13 6.58L12 17.58l-5.9 3.1 1.13-6.58L2.45 9.44l6.6-.96L12 2.5z" fill="currentColor"/>
+                    </svg>
+                  {%- else -%}
+                    <svg class="rc-testimonials__star rc-testimonials__star--empty" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+                      <path d="M12 2.5l2.95 5.98 6.6.96-4.78 4.66 1.13 6.58L12 17.58l-5.9 3.1 1.13-6.58L2.45 9.44l6.6-.96L12 2.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                    </svg>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
             {%- endif -%}
-          </footer>
-        </article>
+
+            {%- if quote != blank -%}
+              <blockquote class="rc-testimonials__quote">{{ quote }}</blockquote>
+            {%- endif -%}
+
+            <footer class="rc-testimonials__person">
+              {%- if show_avatars -%}
+                <span class="rc-testimonials__avatar">
+                  {%- if avatar != blank -%}
+                    {{ avatar | image_url: width: 180 | image_tag:
+                      loading: 'lazy',
+                      widths: '90,180',
+                      sizes: '90px',
+                      alt: name,
+                      class: 'rc-testimonials__avatar-image'
+                    }}
+                  {%- else -%}
+                    <svg viewBox="0 0 90 90" width="90" height="90" aria-hidden="true" focusable="false">
+                      <circle cx="45" cy="45" r="45" fill="#E3E7EE"/>
+                      <circle cx="45" cy="36" r="16" fill="#B9C1CC"/>
+                      <path d="M15 80c4-16 16-24 30-24s26 8 30 24" fill="#B9C1CC"/>
+                    </svg>
+                  {%- endif -%}
+                </span>
+              {%- endif -%}
+              {%- if name != blank -%}
+                <span class="rc-testimonials__name">{{ name | escape }}</span>
+              {%- endif -%}
+            </footer>
+          </article>
+        </li>
       {%- endfor -%}
-    </div>
+    </ul>
 
     {%- if cta_label != blank -%}
       <div class="rc-testimonials__cta-wrap">
@@ -134,8 +151,12 @@
     flex-direction: column;
     gap: 16px;
     max-width: 760px;
-    text-align: center;
+    width: 100%;
   }
+
+  .section-rc-testimonials--heading-left .rc-testimonials__header { text-align: left; align-self: flex-start; }
+  .section-rc-testimonials--heading-center .rc-testimonials__header { text-align: center; align-self: center; }
+  .section-rc-testimonials--heading-right .rc-testimonials__header { text-align: right; align-self: flex-end; }
 
   .section-rc-testimonials-{{ section.id }} .rc-testimonials__heading {
     margin: 0;
@@ -161,22 +182,32 @@
   }
 
   .section-rc-testimonials-{{ section.id }} .rc-testimonials__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--rc-columns-desktop, 3), minmax(0, 1fr));
     gap: 24px;
     width: 100%;
+  }
+
+  .section-rc-testimonials-{{ section.id }} .rc-testimonials__item {
+    display: flex;
   }
 
   .section-rc-testimonials-{{ section.id }} .rc-testimonials__card {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    align-items: center;
-    text-align: center;
+    width: 100%;
     padding: 36px 28px;
     background-color: var(--rc-card-bg, transparent);
-    border-radius: 12px;
+    border-radius: var(--rc-card-radius, 12px);
   }
+
+  .section-rc-testimonials--content-left .rc-testimonials__card { text-align: left; align-items: flex-start; }
+  .section-rc-testimonials--content-center .rc-testimonials__card { text-align: center; align-items: center; }
+  .section-rc-testimonials--content-right .rc-testimonials__card { text-align: right; align-items: flex-end; }
 
   .section-rc-testimonials-{{ section.id }} .rc-testimonials__stars {
     display: inline-flex;
@@ -202,9 +233,12 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    align-items: center;
     margin-top: auto;
   }
+
+  .section-rc-testimonials--content-left .rc-testimonials__person { align-items: flex-start; }
+  .section-rc-testimonials--content-center .rc-testimonials__person { align-items: center; }
+  .section-rc-testimonials--content-right .rc-testimonials__person { align-items: flex-end; }
 
   .section-rc-testimonials-{{ section.id }} .rc-testimonials__avatar {
     display: block;
@@ -265,7 +299,7 @@
 
   @media screen and (max-width: 989px) {
     .section-rc-testimonials-{{ section.id }} .rc-testimonials__grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(var(--rc-columns-tablet, 2), minmax(0, 1fr));
       gap: 16px;
     }
     .section-rc-testimonials-{{ section.id }} .rc-testimonials__inner {
@@ -274,6 +308,9 @@
   }
 
   @media screen and (max-width: 749px) {
+    .section-rc-testimonials-{{ section.id }} .rc-testimonials__grid {
+      grid-template-columns: repeat(var(--rc-columns-mobile, 1), minmax(0, 1fr));
+    }
     .section-rc-testimonials-{{ section.id }} .rc-testimonials__card {
       padding: 28px 20px;
     }
@@ -306,7 +343,7 @@
   "disabled_on": {
     "groups": ["header", "footer"]
   },
-  "max_blocks": 9,
+  "max_blocks": 12,
   "settings": [
     {
       "type": "text",
@@ -319,6 +356,83 @@
       "id": "subheading",
       "label": "Subheading",
       "default": "From everyday lifters to elite professionals RCSS fuels those who refuse to quit."
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Heading alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Card content alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "columns_tablet",
+      "label": "Columns on tablet",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card corner radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stars",
+      "label": "Show star rating",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_avatars",
+      "label": "Show reviewer avatar",
+      "default": true
     },
     {
       "type": "header",

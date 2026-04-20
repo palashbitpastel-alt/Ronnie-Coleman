@@ -1,5 +1,7 @@
 {%- liquid
   assign heading_text = section.settings.heading
+  assign heading_alignment = section.settings.heading_alignment
+  assign layout_style = section.settings.layout_style
 
   assign heading_font = section.settings.heading_font
   assign question_font = section.settings.question_font
@@ -27,12 +29,13 @@
     --rc-answer-color: {{ section.settings.answer_color }};
     --rc-border-color: {{ section.settings.border_color }};
     --rc-icon-color: {{ section.settings.icon_color }};
+    --rc-card-bg: {{ section.settings.card_background }};
     padding-top: {{ section.settings.padding_top }}px;
     padding-bottom: {{ section.settings.padding_bottom }}px;
   }
 {%- endstyle -%}
 
-<section class="section-rc-faq-{{ section.id }} rc-faq">
+<section class="section-rc-faq-{{ section.id }} rc-faq rc-faq--align-{{ heading_alignment }} rc-faq--layout-{{ layout_style }}">
   <div class="page-width rc-faq__inner">
     {%- if heading_text != blank -%}
       <h2 class="rc-faq__heading">{{ heading_text | escape }}</h2>
@@ -90,7 +93,22 @@
     letter-spacing: -0.03em;
     text-transform: uppercase;
     color: var(--rc-heading-color, #FFFFFF);
-    text-align: center;
+  }
+
+  .section-rc-faq--align-left .rc-faq__heading { text-align: left; align-self: flex-start; }
+  .section-rc-faq--align-center .rc-faq__heading { text-align: center; align-self: center; }
+  .section-rc-faq--align-right .rc-faq__heading { text-align: right; align-self: flex-end; }
+
+  .section-rc-faq--layout-boxed .rc-faq__item {
+    background-color: var(--rc-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--rc-border-color, rgba(255, 255, 255, 0.15));
+    border-radius: 8px;
+    margin-bottom: 12px;
+    padding: 0 20px;
+  }
+
+  .section-rc-faq--layout-boxed .rc-faq__item:first-child {
+    border-top: 1px solid var(--rc-border-color, rgba(255, 255, 255, 0.15));
   }
 
   .section-rc-faq-{{ section.id }} .rc-faq__list {
@@ -244,6 +262,27 @@
       "default": "FAQ"
     },
     {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Heading alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "layout_style",
+      "label": "Item style",
+      "options": [
+        { "value": "list", "label": "Divider list" },
+        { "value": "boxed", "label": "Boxed cards" }
+      ],
+      "default": "list"
+    },
+    {
       "type": "header",
       "content": "Typography"
     },
@@ -298,6 +337,13 @@
       "id": "border_color",
       "label": "Divider color",
       "default": "#303140"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Boxed item background",
+      "default": "#141525",
+      "info": "Only shown when item style is \"Boxed cards\"."
     },
     {
       "type": "color",

@@ -7,6 +7,10 @@
   assign cta_label = section.settings.cta_label
   assign cta_link = section.settings.cta_link
   assign image_position = section.settings.image_position
+  assign quote_alignment = section.settings.quote_alignment
+  assign content_alignment = section.settings.content_alignment
+  assign show_hero_quote = section.settings.show_hero_quote
+  assign show_split = section.settings.show_split
 
   assign heading_font = section.settings.heading_font
   assign quote_font = section.settings.quote_font
@@ -45,9 +49,9 @@
   }
 {%- endstyle -%}
 
-<section class="section-rc-brand-story-{{ section.id }} rc-brand-story rc-brand-story--image-{{ image_position }}">
+<section class="section-rc-brand-story-{{ section.id }} rc-brand-story rc-brand-story--image-{{ image_position }} rc-brand-story--quote-{{ quote_alignment }} rc-brand-story--content-{{ content_alignment }}">
   <div class="page-width rc-brand-story__inner">
-    {%- if quote_text != blank -%}
+    {%- if show_hero_quote and quote_text != blank -%}
       <figure class="rc-brand-story__hero-quote">
         <svg class="rc-brand-story__quote-mark rc-brand-story__quote-mark--open" viewBox="0 0 48 36" width="48" height="36" aria-hidden="true" focusable="false">
           <path d="M0 36V21.6C0 10.08 6 2.88 19.2 0l2.4 6c-7.2 2.4-10.8 6.72-10.8 12.72h10.8V36H0zm26.4 0V21.6C26.4 10.08 32.4 2.88 45.6 0L48 6c-7.2 2.4-10.8 6.72-10.8 12.72H48V36H26.4z" fill="currentColor"/>
@@ -59,6 +63,7 @@
       </figure>
     {%- endif -%}
 
+    {%- if show_split -%}
     <div class="rc-brand-story__split">
       <div class="rc-brand-story__media">
         {%- if section.settings.image != blank -%}
@@ -100,6 +105,7 @@
         {%- endif -%}
       </div>
     </div>
+    {%- endif -%}
   </div>
 </section>
 
@@ -122,9 +128,11 @@
     flex-direction: column;
     gap: 18px;
     max-width: 1100px;
-    align-self: center;
-    text-align: center;
   }
+
+  .section-rc-brand-story--quote-left .rc-brand-story__hero-quote { align-self: flex-start; text-align: left; align-items: flex-start; }
+  .section-rc-brand-story--quote-center .rc-brand-story__hero-quote { align-self: center; text-align: center; align-items: center; }
+  .section-rc-brand-story--quote-right .rc-brand-story__hero-quote { align-self: flex-end; text-align: right; align-items: flex-end; }
 
   .section-rc-brand-story-{{ section.id }} .rc-brand-story__quote-mark {
     color: var(--rc-accent-color, #1A4083);
@@ -211,6 +219,10 @@
     gap: 18px;
     max-width: 560px;
   }
+
+  .section-rc-brand-story--content-left .rc-brand-story__content { text-align: left; align-items: flex-start; }
+  .section-rc-brand-story--content-center .rc-brand-story__content { text-align: center; align-items: center; }
+  .section-rc-brand-story--content-right .rc-brand-story__content { text-align: right; align-items: flex-end; }
 
   .section-rc-brand-story-{{ section.id }} .rc-brand-story__eyebrow {
     margin: 0;
@@ -326,6 +338,12 @@
       "content": "Hero quote"
     },
     {
+      "type": "checkbox",
+      "id": "show_hero_quote",
+      "label": "Show hero quote",
+      "default": true
+    },
+    {
       "type": "richtext",
       "id": "quote",
       "label": "Large italic quote",
@@ -338,8 +356,25 @@
       "default": "Ronnie Coleman"
     },
     {
+      "type": "select",
+      "id": "quote_alignment",
+      "label": "Quote alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
       "type": "header",
       "content": "Story split"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_split",
+      "label": "Show image + text split",
+      "default": true
     },
     {
       "type": "image_picker",
@@ -358,6 +393,17 @@
       "label": "Image position",
       "options": [
         { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
         { "value": "right", "label": "Right" }
       ],
       "default": "left"

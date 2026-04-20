@@ -7,6 +7,9 @@
   assign app_store_link = section.settings.app_store_link
   assign google_play_link = section.settings.google_play_link
   assign media_position = section.settings.media_position
+  assign content_alignment = section.settings.content_alignment
+  assign show_eyebrow = section.settings.show_eyebrow
+  assign phones_style = section.settings.phones_style
 
   assign heading_font = section.settings.heading_font
   assign body_font = section.settings.body_font
@@ -40,10 +43,10 @@
   }
 {%- endstyle -%}
 
-<section class="section-rc-app-promo-{{ section.id }} rc-app-promo rc-app-promo--media-{{ media_position }}">
+<section class="section-rc-app-promo-{{ section.id }} rc-app-promo rc-app-promo--media-{{ media_position }} rc-app-promo--align-{{ content_alignment }} rc-app-promo--phones-{{ phones_style }}">
   <div class="page-width rc-app-promo__inner">
     <div class="rc-app-promo__content">
-      {%- if eyebrow_text != blank -%}
+      {%- if show_eyebrow and eyebrow_text != blank -%}
         <p class="rc-app-promo__eyebrow">{{ eyebrow_text | escape }}</p>
       {%- endif -%}
       {%- if heading_text != blank -%}
@@ -149,6 +152,10 @@
     color: var(--rc-text-color, #FFFFFF);
   }
 
+  .section-rc-app-promo--align-left .rc-app-promo__content { text-align: left; align-items: flex-start; }
+  .section-rc-app-promo--align-center .rc-app-promo__content { text-align: center; align-items: center; margin: 0 auto; }
+  .section-rc-app-promo--align-right .rc-app-promo__content { text-align: right; align-items: flex-end; margin-left: auto; }
+
   .section-rc-app-promo-{{ section.id }} .rc-app-promo__eyebrow {
     margin: 0;
     font-family: var(--rc-body-family);
@@ -251,15 +258,19 @@
     transition: transform 0.4s ease;
   }
 
-  .section-rc-app-promo-{{ section.id }} .rc-app-promo__phone--1 {
+  .section-rc-app-promo--phones-staggered .rc-app-promo__phone--1 {
     transform: translateY(24px) rotate(-4deg);
   }
-  .section-rc-app-promo-{{ section.id }} .rc-app-promo__phone--2 {
+  .section-rc-app-promo--phones-staggered .rc-app-promo__phone--2 {
     transform: translateY(-20px) scale(1.06);
     z-index: 2;
   }
-  .section-rc-app-promo-{{ section.id }} .rc-app-promo__phone--3 {
+  .section-rc-app-promo--phones-staggered .rc-app-promo__phone--3 {
     transform: translateY(24px) rotate(4deg);
+  }
+
+  .section-rc-app-promo--phones-aligned .rc-app-promo__phone {
+    transform: none;
   }
 
   .section-rc-app-promo-{{ section.id }} .rc-app-promo__phone-frame {
@@ -362,6 +373,12 @@
       "default": "YEAH BUDDY™ APP"
     },
     {
+      "type": "checkbox",
+      "id": "show_eyebrow",
+      "label": "Show eyebrow",
+      "default": true
+    },
+    {
       "type": "text",
       "id": "heading",
       "label": "Heading",
@@ -403,6 +420,27 @@
         { "value": "left", "label": "Left" }
       ],
       "default": "right"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "phones_style",
+      "label": "Phone arrangement",
+      "options": [
+        { "value": "staggered", "label": "Staggered (fanned)" },
+        { "value": "aligned", "label": "Aligned (straight)" }
+      ],
+      "default": "staggered"
     },
     {
       "type": "header",

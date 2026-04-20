@@ -29,10 +29,11 @@
     --rc-cta-bg: {{ section.settings.cta_background }};
     --rc-cta-text: {{ section.settings.cta_text_color }};
     --rc-scrim-color: {{ section.settings.scrim_color }};
+    --rc-scrim-opacity: {{ section.settings.scrim_opacity | divided_by: 100.0 }};
   }
 {%- endstyle -%}
 
-<section class="section-rc-train-like-ronnie-{{ section.id }} rc-train-like-ronnie rc-train-like-ronnie--scrim-{{ section.settings.scrim_side }}">
+<section class="section-rc-train-like-ronnie-{{ section.id }} rc-train-like-ronnie rc-train-like-ronnie--scrim-{{ section.settings.scrim_side }} rc-train-like-ronnie--height-{{ section.settings.banner_height }}">
   <div class="rc-train-like-ronnie__frame">
     <div class="rc-train-like-ronnie__media">
       {%- if section.settings.image != blank -%}
@@ -78,10 +79,14 @@
   .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__frame {
     position: relative;
     width: 100%;
-    aspect-ratio: 1920 / 560;
     overflow: hidden;
     isolation: isolate;
   }
+
+  .section-rc-train-like-ronnie--height-short .rc-train-like-ronnie__frame { aspect-ratio: 1920 / 420; }
+  .section-rc-train-like-ronnie--height-medium .rc-train-like-ronnie__frame { aspect-ratio: 1920 / 560; }
+  .section-rc-train-like-ronnie--height-tall .rc-train-like-ronnie__frame { aspect-ratio: 1920 / 720; }
+  .section-rc-train-like-ronnie--height-full .rc-train-like-ronnie__frame { min-height: 80vh; aspect-ratio: auto; }
 
   .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__media {
     position: absolute;
@@ -102,6 +107,7 @@
     inset: 0;
     z-index: 1;
     pointer-events: none;
+    opacity: var(--rc-scrim-opacity, 1);
   }
 
   .section-rc-train-like-ronnie--scrim-left .rc-train-like-ronnie__scrim {
@@ -324,18 +330,40 @@
     },
     {
       "type": "header",
-      "content": "Overlay & colors"
+      "content": "Layout & overlay"
+    },
+    {
+      "type": "select",
+      "id": "banner_height",
+      "label": "Banner height",
+      "options": [
+        { "value": "short", "label": "Short (420px at 1920w)" },
+        { "value": "medium", "label": "Medium (560px)" },
+        { "value": "tall", "label": "Tall (720px)" },
+        { "value": "full", "label": "Full viewport (80vh)" }
+      ],
+      "default": "medium"
     },
     {
       "type": "select",
       "id": "scrim_side",
-      "label": "Dark scrim position",
+      "label": "Text & scrim position",
       "options": [
         { "value": "left", "label": "Left" },
         { "value": "right", "label": "Right" },
         { "value": "center", "label": "Center" }
       ],
       "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "scrim_opacity",
+      "label": "Scrim opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
     },
     {
       "type": "color",
