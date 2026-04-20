@@ -94,6 +94,92 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  {%- if section.settings.enable_transparent_header -%}
+    /* Transparent overlay — initial state (over hero) */
+    .section-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      z-index: 4;
+      margin-bottom: 0;
+    }
+
+    .section-header .header-wrapper {
+      background-color: transparent;
+      border-bottom-color: transparent;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .section-header:not(.scrolled-past-header) .header__menu-item,
+    .section-header:not(.scrolled-past-header) .header__active-menu-item,
+    .section-header:not(.scrolled-past-header) summary.header__menu-item,
+    .section-header:not(.scrolled-past-header) .header__heading-link,
+    .section-header:not(.scrolled-past-header) .header__heading-link .h2,
+    .section-header:not(.scrolled-past-header) .header__icon,
+    .section-header:not(.scrolled-past-header) .header__icon span,
+    .section-header:not(.scrolled-past-header) .header__icon .icon,
+    .section-header:not(.scrolled-past-header) .header__icon svg {
+      color: #FFFFFF;
+    }
+
+    .section-header:not(.scrolled-past-header) .header__icon:not(.header__icon--cart) svg,
+    .section-header:not(.scrolled-past-header) .header__icon--summary svg {
+      color: #FFFFFF;
+      stroke: #FFFFFF;
+    }
+
+    .section-header:not(.scrolled-past-header) .cart-count-bubble {
+      background-color: #FFFFFF;
+      color: #0C0D16;
+    }
+
+    /* Scrolled state — fixed with white background */
+    .section-header.scrolled-past-header {
+      position: fixed;
+      top: 0;
+    }
+
+    .section-header.scrolled-past-header.shopify-section-header-hidden {
+      top: calc(-1 * var(--header-height));
+    }
+
+    .section-header.scrolled-past-header .header-wrapper {
+      background-color: #FFFFFF;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .section-header.scrolled-past-header .header__menu-item,
+    .section-header.scrolled-past-header .header__active-menu-item,
+    .section-header.scrolled-past-header summary.header__menu-item,
+    .section-header.scrolled-past-header .header__heading-link,
+    .section-header.scrolled-past-header .header__heading-link .h2,
+    .section-header.scrolled-past-header .header__icon,
+    .section-header.scrolled-past-header .header__icon span,
+    .section-header.scrolled-past-header .header__icon .icon,
+    .section-header.scrolled-past-header .header__icon svg {
+      color: #222222;
+    }
+
+    .section-header.scrolled-past-header .header__icon:not(.header__icon--cart) svg,
+    .section-header.scrolled-past-header .header__icon--summary svg {
+      color: #222222;
+      stroke: #222222;
+    }
+
+    /* Menu typography — Barlow 600, 20px per Figma */
+    .section-header .header__menu-item,
+    .section-header .header__active-menu-item,
+    .section-header summary.header__menu-item {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 600;
+      font-size: 2rem;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+  {%- endif -%}
 {%- endstyle -%}
 
 <script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
@@ -525,6 +611,13 @@
       "id": "show_line_separator",
       "default": true,
       "label": "t:sections.header.settings.show_line_separator.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_transparent_header",
+      "default": true,
+      "label": "Enable transparent header",
+      "info": "Header overlays the first section (e.g. hero banner). Menu/icons are white initially, and the bar turns white with dark text after scroll."
     },
     {
       "type": "header",
