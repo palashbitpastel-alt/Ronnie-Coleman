@@ -60,9 +60,61 @@
   #collection-{{ section.id }} .fc-title-row__nav {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
     margin: 0;
     padding: 0;
+  }
+
+  #collection-{{ section.id }} .fc-title-row__btn {
+    width: auto;
+    height: auto;
+    padding: 4px;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    color: #1A4083;
+    box-shadow: none;
+    cursor: pointer;
+    opacity: 1;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  #collection-{{ section.id }} .fc-title-row__btn:hover:not([disabled]),
+  #collection-{{ section.id }} .fc-title-row__btn:focus-visible:not([disabled]) {
+    transform: translateY(-1px);
+    background: transparent;
+    color: #1A4083;
+    box-shadow: none;
+    outline: none;
+  }
+
+  #collection-{{ section.id }} .fc-title-row__btn[disabled],
+  #collection-{{ section.id }} .fc-title-row__btn[aria-disabled='true'] {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  #collection-{{ section.id }} .fc-title-row__btn svg {
+    display: block;
+    width: 30px;
+    height: 26px;
+    stroke: #1A4083;
+    stroke-width: 2.5px;
+  }
+
+  @media screen and (min-width: 990px) {
+    #collection-{{ section.id }} .slider-component-desktop.page-width {
+      max-width: var(--page-width, 120rem);
+    }
+
+    #collection-{{ section.id }} .slider--desktop .slider__slide:first-child {
+      margin-left: 0;
+      scroll-margin-left: 0;
+    }
+
+    #collection-{{ section.id }} .slider--desktop:after {
+      content: none;
+    }
   }
 {%- endstyle -%}
 
@@ -120,25 +172,21 @@
           <div class="slider-buttons fc-title-row__nav">
             <button
               type="button"
-              class="slider-button slider-button--prev"
+              class="slider-button slider-button--prev fc-title-row__btn"
               name="previous"
               aria-label="{{ 'general.slider.previous_slide' | t }}"
               aria-controls="Slider-{{ section.id }}"
             >
-              <span class="svg-wrapper">
-                {{- 'icon-caret.svg' | inline_asset_content -}}
-              </span>
+              {{- 'rc-slider-caret-prev.svg' | inline_asset_content -}}
             </button>
             <button
               type="button"
-              class="slider-button slider-button--next"
+              class="slider-button slider-button--next fc-title-row__btn"
               name="next"
               aria-label="{{ 'general.slider.next_slide' | t }}"
               aria-controls="Slider-{{ section.id }}"
             >
-              <span class="svg-wrapper">
-                {{- 'icon-caret.svg' | inline_asset_content -}}
-              </span>
+              {{- 'rc-slider-caret-next.svg' | inline_asset_content -}}
             </button>
           </div>
         {%- endif -%}
