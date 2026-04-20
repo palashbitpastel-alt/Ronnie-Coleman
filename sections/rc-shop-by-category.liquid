@@ -1,368 +1,312 @@
-{{ 'rc-sections.css' | asset_url | stylesheet_tag }}
-
-{%- liquid
-  assign heading_text = section.settings.heading
-  assign heading_alignment = section.settings.heading_alignment
-  assign columns_desktop = section.settings.columns_desktop | default: 4
-  assign columns_tablet = section.settings.columns_tablet | default: 2
-  assign columns_mobile = section.settings.columns_mobile | default: 1
-  assign image_ratio = section.settings.image_ratio
-  assign show_title = section.settings.show_title
-  assign show_cta = section.settings.show_cta
-  assign overlay_style = section.settings.overlay_style
-
-  assign heading_font = section.settings.heading_font
-  assign title_font = section.settings.title_font
-  assign cta_font = section.settings.cta_font
--%}
+{{ 'section-collection-list.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-slider.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
-  {{ heading_font | font_face: font_display: 'swap' }}
-  {{ title_font | font_face: font_display: 'swap' }}
-  {{ cta_font | font_face: font_display: 'swap' }}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
 
-  .section-rc-shop-by-category-{{ section.id }} {
-    --rc-heading-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
-    --rc-heading-weight: {{ heading_font.weight }};
-    --rc-heading-style: {{ heading_font.style }};
-    --rc-title-family: {{ title_font.family }}, {{ title_font.fallback_families }};
-    --rc-title-weight: {{ title_font.weight }};
-    --rc-title-style: {{ title_font.style }};
-    --rc-cta-family: {{ cta_font.family }}, {{ cta_font.fallback_families }};
-    --rc-cta-weight: {{ cta_font.weight }};
-    --rc-cta-style: {{ cta_font.style }};
-    --rc-bg: {{ section.settings.background_color }};
-    --rc-heading-color: {{ section.settings.heading_color }};
-    --rc-tile-text: {{ section.settings.tile_text_color }};
-    --rc-tile-overlay: {{ section.settings.tile_overlay_color }};
-    --rc-tile-overlay-opacity: {{ section.settings.tile_overlay_opacity | divided_by: 100.0 }};
-    --rc-cta-bg: {{ section.settings.cta_background }};
-    --rc-cta-text: {{ section.settings.cta_text_color }};
-    --rc-card-radius: {{ section.settings.card_radius }}px;
-    --rc-columns-desktop: {{ columns_desktop }};
-    --rc-columns-tablet: {{ columns_tablet }};
-    --rc-columns-mobile: {{ columns_mobile }};
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .rc-shop-by-category-title-row-{{ section.id }} {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .rc-shop-by-category-title-row-{{ section.id }} .collection-list-title {
+    margin: 0;
+    flex: 1 1 auto;
+  }
+
+  .rc-shop-by-category-title-row-{{ section.id }} .slider-buttons {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0;
+    margin: 0 0 0 auto;
+  }
+
+  .rc-shop-by-category-title-row-{{ section.id }} .slider-button {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    color: {{ section.settings.slider_arrow_color | default: '#1A4083' }};
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .rc-shop-by-category-title-row-{{ section.id }} .slider-button[disabled] {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .rc-shop-by-category-title-row-{{ section.id }} .slider-button:hover:not([disabled]) {
+    transform: translateY(-1px);
+  }
+
+  .rc-shop-by-category-title-row-{{ section.id }} .slider-button svg {
+    width: 30px;
+    height: 26px;
+    display: block;
+  }
+
+  .rc-shop-by-category-title-row-{{ section.id }} .slider-counter {
+    min-width: 44px;
+    text-align: center;
   }
 {%- endstyle -%}
 
-<section class="section-rc-shop-by-category-{{ section.id }} rc-shop-by-category rc-shop-by-category--align-{{ heading_alignment }} rc-shop-by-category--ratio-{{ image_ratio }} rc-shop-by-category--overlay-{{ overlay_style }}">
-  <div class="page-width rc-shop-by-category__inner">
-    {%- if heading_text != blank -%}
-      <h2 class="rc-shop-by-category__heading">{{ heading_text | escape }}</h2>
-    {%- endif -%}
+{%- liquid
+  assign columns_mobile_int = section.settings.columns_mobile | plus: 0
+  assign show_mobile_slider = false
+  if section.settings.swipe_on_mobile and section.blocks.size > columns_mobile_int
+    assign show_mobile_slider = true
+  endif
+-%}
 
-    <ul class="rc-shop-by-category__grid" role="list">
-      {%- for block in section.blocks -%}
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="collection-list-wrapper page-width isolate{% if show_mobile_slider %} page-width-desktop{% endif %}{% if section.settings.title == blank %} no-heading{% endif %}{% if section.settings.show_view_all == false or section.blocks.size > collections.size %} no-mobile-link{% endif %} section-{{ section.id }}-padding">
+    <slider-component class="slider-mobile-gutter{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+      {%- unless section.settings.title == blank -%}
+        <div class="title-wrapper-with-link{% if show_mobile_slider %} title-wrapper--self-padded-tablet-down{% else %} title-wrapper--self-padded-mobile{% endif %} title-wrapper--no-top-margin rc-shop-by-category-title-row-{{ section.id }}">
+          <h2
+            id="SectionHeading-{{ section.id }}"
+            class="collection-list-title inline-richtext {{ section.settings.heading_size }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+          >
+            {{ section.settings.title }}
+          </h2>
+
+          {%- if section.settings.show_view_all and show_mobile_slider -%}
+            <a
+              href="{{ routes.collections_url }}"
+              id="ViewAll-{{ section.id }}"
+              class="link underlined-link large-up-hide{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+              aria-labelledby="ViewAll-{{ section.id }} SectionHeading-{{ section.id }}"
+            >
+              {{- 'sections.collection_list.view_all' | t -}}
+            </a>
+          {%- endif -%}
+
+          {%- if show_mobile_slider -%}
+            <div class="slider-buttons">
+              <button
+                type="button"
+                class="slider-button slider-button--prev"
+                name="previous"
+                aria-label="{{ 'general.slider.previous_slide' | t }}"
+                aria-controls="Slider-{{ section.id }}"
+              >
+                {{- 'rc-slider-arrow-prev.svg' | inline_asset_content -}}
+              </button>
+              <div class="slider-counter caption">
+                <span class="slider-counter--current">1</span>
+                <span aria-hidden="true"> / </span>
+                <span class="visually-hidden">{{ 'general.slider.of' | t }}</span>
+                <span class="slider-counter--total">{{ section.blocks.size }}</span>
+              </div>
+              <button
+                type="button"
+                class="slider-button slider-button--next"
+                name="next"
+                aria-label="{{ 'general.slider.next_slide' | t }}"
+                aria-controls="Slider-{{ section.id }}"
+              >
+                {{- 'rc-slider-arrow-next.svg' | inline_asset_content -}}
+              </button>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endunless -%}
+
+      <ul
+        class="collection-list contains-card contains-card--collection{% if settings.card_style == 'standard' %} contains-card--standard{% endif %} grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down{% if section.settings.swipe_on_mobile %} slider slider--tablet grid--peek{% endif %} collection-list--{{ section.blocks.size }}-items"
+        id="Slider-{{ section.id }}"
+        role="list"
+      >
         {%- liquid
-          assign block_collection = block.settings.collection
-          assign custom_image = block.settings.custom_image
-          assign custom_title = block.settings.custom_title
-          assign custom_link = block.settings.custom_link
-          assign cta_label = block.settings.cta_label
-
-          assign tile_title = custom_title
-          if tile_title == blank and block_collection != blank
-            assign tile_title = block_collection.title
-          endif
-
-          assign tile_link = custom_link
-          if tile_link == blank and block_collection != blank
-            assign tile_link = block_collection.url
-          endif
-          if tile_link == blank
-            assign tile_link = '#'
-          endif
-
-          assign tile_image = custom_image
-          if tile_image == blank and block_collection != blank
-            assign tile_image = block_collection.featured_image
+          assign columns = section.blocks.size
+          if columns > 3
+            assign columns = 3
           endif
         -%}
-        <li class="rc-shop-by-category__item" {{ block.shopify_attributes }}>
-          <a href="{{ tile_link }}" class="rc-shop-by-category__tile">
-            <div class="rc-shop-by-category__media">
-              {%- if tile_image != blank -%}
-                {{ tile_image | image_url: width: 1200 | image_tag:
-                  loading: 'lazy',
-                  widths: '300,500,700,900,1200',
-                  sizes: '(min-width: 990px) calc(100vw / var(--rc-columns-desktop)), (min-width: 750px) calc(100vw / var(--rc-columns-tablet)), 100vw',
-                  alt: tile_title,
-                  class: 'rc-shop-by-category__image'
-                }}
-              {%- else -%}
-                <div class="rc-shop-by-category__placeholder" aria-hidden="true">
-                  {{ 'collection-1' | placeholder_svg_tag: 'rc-shop-by-category__placeholder-svg' }}
-                </div>
-              {%- endif -%}
-              <span class="rc-shop-by-category__overlay" aria-hidden="true"></span>
+        {%- for block in section.blocks -%}
+          <li
+            id="Slide-{{ section.id }}-{{ forloop.index }}"
+            class="collection-list__item grid__item{% if show_mobile_slider %} slider__slide{% endif %}{% if block.settings.collection.featured_image == nil %} collection-list__item--no-media{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+            {{ block.shopify_attributes }}
+            {% if settings.animations_reveal_on_scroll %}
+              data-cascade
+              style="--animation-order: {{ forloop.index }};"
+            {% endif %}
+          >
+            {%- assign placeholder_image_index = forloop.index0 | modulo: 4 | plus: 1 -%}
+            {%- assign placeholder_image = 'collection-apparel-' | append: placeholder_image_index -%}
+            {% render 'card-collection',
+              card_collection: block.settings.collection,
+              media_aspect_ratio: section.settings.image_ratio,
+              columns: columns,
+              placeholder_image: placeholder_image
+            %}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </slider-component>
 
-              {%- if show_title and tile_title != blank -%}
-                <div class="rc-shop-by-category__content">
-                  <h3 class="rc-shop-by-category__title">{{ tile_title | escape }}</h3>
-                  {%- if show_cta and cta_label != blank -%}
-                    <span class="rc-shop-by-category__cta">
-                      <span>{{ cta_label | escape }}</span>
-                      <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false">
-                        <path d="M5 12h14M13 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                    </span>
-                  {%- endif -%}
-                </div>
-              {%- endif -%}
-            </div>
-          </a>
-        </li>
-      {%- endfor -%}
-    </ul>
+    {%- if section.settings.show_view_all and section.blocks.size < collections.size -%}
+      <div
+        class="center collection-list-view-all{% if show_mobile_slider %} small-hide medium-hide{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+        {% if settings.animations_reveal_on_scroll %}
+          data-cascade
+        {% endif %}
+      >
+        <a
+          href="{{ routes.collections_url }}"
+          class="button"
+          id="ViewAllButton-{{ section.id }}"
+          aria-labelledby="ViewAllButton-{{ section.id }} SectionHeading-{{ section.id }}"
+        >
+          {{- 'sections.collection_list.view_all' | t -}}
+        </a>
+      </div>
+    {%- endif -%}
   </div>
-</section>
+</div>
 
 {% schema %}
 {
   "name": "Shop by category (rc)",
   "tag": "section",
-  "class": "section",
+  "class": "section section-collection-list",
+  "max_blocks": 15,
   "disabled_on": {
     "groups": ["header", "footer"]
   },
-  "max_blocks": 12,
   "settings": [
     {
-      "type": "text",
-      "id": "heading",
-      "label": "Heading",
-      "default": "SHOP BY CATEGORY"
+      "type": "inline_richtext",
+      "id": "title",
+      "default": "SHOP BY CATEGORY",
+      "label": "Heading"
     },
     {
       "type": "select",
-      "id": "heading_alignment",
-      "label": "Heading alignment",
+      "id": "heading_size",
       "options": [
-        { "value": "left", "label": "Left" },
-        { "value": "center", "label": "Center" },
-        { "value": "right", "label": "Right" }
+        { "value": "h2", "label": "Small" },
+        { "value": "h1", "label": "Medium" },
+        { "value": "h0", "label": "Large" },
+        { "value": "hxl", "label": "Extra large" },
+        { "value": "hxxl", "label": "Extra extra large" }
       ],
-      "default": "left"
-    },
-    {
-      "type": "header",
-      "content": "Layout"
-    },
-    {
-      "type": "range",
-      "id": "columns_desktop",
-      "label": "Columns on desktop",
-      "min": 1,
-      "max": 6,
-      "step": 1,
-      "default": 4
-    },
-    {
-      "type": "select",
-      "id": "columns_tablet",
-      "label": "Columns on tablet",
-      "options": [
-        { "value": "1", "label": "1" },
-        { "value": "2", "label": "2" },
-        { "value": "3", "label": "3" }
-      ],
-      "default": "2"
-    },
-    {
-      "type": "select",
-      "id": "columns_mobile",
-      "label": "Columns on mobile",
-      "options": [
-        { "value": "1", "label": "1" },
-        { "value": "2", "label": "2" }
-      ],
-      "default": "1"
+      "default": "h1",
+      "label": "Heading size"
     },
     {
       "type": "select",
       "id": "image_ratio",
-      "label": "Image ratio",
       "options": [
         { "value": "adapt", "label": "Adapt to image" },
-        { "value": "square", "label": "Square (1:1)" },
-        { "value": "portrait", "label": "Portrait (3:4)" },
-        { "value": "landscape", "label": "Landscape (16:9)" },
-        { "value": "wide", "label": "Wide banner (1466:160)" }
+        { "value": "portrait", "label": "Portrait" },
+        { "value": "square", "label": "Square" }
       ],
-      "default": "portrait"
+      "default": "square",
+      "label": "Image ratio"
     },
     {
       "type": "range",
-      "id": "card_radius",
-      "label": "Card corner radius",
-      "min": 0,
-      "max": 40,
-      "step": 2,
-      "unit": "px",
-      "default": 12
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 3,
+      "label": "Columns on desktop"
     },
     {
-      "type": "checkbox",
-      "id": "show_title",
-      "label": "Show title over image",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_cta",
-      "label": "Show \"Shop now\" pill",
-      "default": true
-    },
-    {
-      "type": "header",
-      "content": "Typography"
-    },
-    {
-      "type": "font_picker",
-      "id": "heading_font",
-      "label": "Heading font",
-      "default": "helvetica_n7"
-    },
-    {
-      "type": "font_picker",
-      "id": "title_font",
-      "label": "Tile title font",
-      "default": "helvetica_n7"
-    },
-    {
-      "type": "font_picker",
-      "id": "cta_font",
-      "label": "Button font",
-      "default": "helvetica_n7"
-    },
-    {
-      "type": "header",
-      "content": "Colors"
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
     },
     {
       "type": "color",
-      "id": "background_color",
-      "label": "Section background",
-      "default": "#FFFFFF"
-    },
-    {
-      "type": "color",
-      "id": "heading_color",
-      "label": "Heading color",
-      "default": "#222222"
-    },
-    {
-      "type": "color",
-      "id": "tile_text_color",
-      "label": "Tile text color",
-      "default": "#FFFFFF"
-    },
-    {
-      "type": "select",
-      "id": "overlay_style",
-      "label": "Overlay style",
-      "options": [
-        { "value": "gradient", "label": "Gradient (dark top)" },
-        { "value": "gradient-bottom", "label": "Gradient (dark bottom)" },
-        { "value": "solid", "label": "Solid" },
-        { "value": "none", "label": "None" }
-      ],
-      "default": "gradient"
-    },
-    {
-      "type": "color",
-      "id": "tile_overlay_color",
-      "label": "Overlay color",
-      "default": "#000000",
-      "info": "Only used when overlay style is \"Solid\"."
-    },
-    {
-      "type": "range",
-      "id": "tile_overlay_opacity",
-      "label": "Overlay strength",
-      "min": 0,
-      "max": 100,
-      "step": 5,
-      "unit": "%",
-      "default": 100
-    },
-    {
-      "type": "color",
-      "id": "cta_background",
-      "label": "Button background",
+      "id": "slider_arrow_color",
+      "label": "Slider arrow color",
       "default": "#1A4083"
     },
     {
-      "type": "color",
-      "id": "cta_text_color",
-      "label": "Button text",
-      "default": "#FFFFFF"
+      "type": "checkbox",
+      "id": "show_view_all",
+      "default": false,
+      "label": "Enable \"View all\" if list has more collections than shown"
     },
     {
       "type": "header",
-      "content": "Spacing"
+      "content": "Mobile layout"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "options": [
+        { "value": "1", "label": "1 column" },
+        { "value": "2", "label": "2 columns" }
+      ],
+      "default": "1",
+      "label": "Columns on mobile"
+    },
+    {
+      "type": "checkbox",
+      "id": "swipe_on_mobile",
+      "default": true,
+      "label": "Enable swipe on mobile"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
     },
     {
       "type": "range",
       "id": "padding_top",
-      "label": "Top padding",
       "min": 0,
-      "max": 160,
+      "max": 100,
       "step": 4,
       "unit": "px",
-      "default": 60
+      "label": "Top padding",
+      "default": 36
     },
     {
       "type": "range",
       "id": "padding_bottom",
-      "label": "Bottom padding",
       "min": 0,
-      "max": 160,
+      "max": 100,
       "step": 4,
       "unit": "px",
-      "default": 60
+      "label": "Bottom padding",
+      "default": 36
     }
   ],
   "blocks": [
     {
-      "type": "collection",
-      "name": "Collection tile",
+      "type": "featured_collection",
+      "name": "Collection",
       "settings": [
         {
           "type": "collection",
           "id": "collection",
-          "label": "Collection",
-          "info": "Uses the collection's title, featured image, and URL."
-        },
-        {
-          "type": "header",
-          "content": "Overrides"
-        },
-        {
-          "type": "image_picker",
-          "id": "custom_image",
-          "label": "Custom image",
-          "info": "Overrides the collection's featured image."
-        },
-        {
-          "type": "text",
-          "id": "custom_title",
-          "label": "Custom title",
-          "info": "Overrides the collection title."
-        },
-        {
-          "type": "url",
-          "id": "custom_link",
-          "label": "Custom link",
-          "info": "Overrides the collection URL."
-        },
-        {
-          "type": "text",
-          "id": "cta_label",
-          "label": "Button label",
-          "default": "Shop Now"
+          "label": "Collection"
         }
       ]
     }
@@ -371,15 +315,11 @@
     {
       "name": "Shop by category (rc)",
       "category": "Collection",
-      "settings": {
-        "columns_desktop": 4,
-        "image_ratio": "portrait"
-      },
       "blocks": [
-        { "type": "collection", "settings": { "custom_title": "SUPPLEMENTS" } },
-        { "type": "collection", "settings": { "custom_title": "BUNDLES" } },
-        { "type": "collection", "settings": { "custom_title": "APPAREL" } },
-        { "type": "collection", "settings": { "custom_title": "ACCESSORIES" } }
+        { "type": "featured_collection" },
+        { "type": "featured_collection" },
+        { "type": "featured_collection" },
+        { "type": "featured_collection" }
       ]
     }
   ]
