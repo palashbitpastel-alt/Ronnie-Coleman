@@ -183,7 +183,6 @@
         "featured_collection_wB4rja",
         "featured_collection_AjgJR7"
       ],
-      "disabled": true,
       "name": "t:sections.collection-list.presets.name",
       "settings": {
         "title": "",
@@ -200,7 +199,6 @@
     },
     "featured_collection_LKYr86": {
       "type": "featured-collection",
-      "disabled": true,
       "name": "t:sections.featured-collection.presets.name",
       "settings": {
         "title": "",
@@ -274,6 +272,7 @@
         "category_MPUizQ",
         "category_8Cnx6n"
       ],
+      "disabled": true,
       "name": "Collection all (rc)",
       "settings": {
         "title": "",
@@ -286,12 +285,13 @@
         "columns_mobile": 2,
         "tile_aspect": "4:5",
         "tile_gap": 24,
-        "tile_radius": 8,
+        "tile_radius": 10,
         "overlay_opacity": 55
       }
     },
     "rc_featured_collection_CBjyjq": {
       "type": "rc-featured-collection",
+      "disabled": true,
       "name": "Featured collection (rc)",
       "settings": {
         "title": "TOP SELLERS",
