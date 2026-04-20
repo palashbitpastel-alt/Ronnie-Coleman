@@ -3,6 +3,9 @@
 
 {{ 'component-slider.css' | asset_url | stylesheet_tag }}
 {{ 'template-collection.css' | asset_url | stylesheet_tag }}
+{%- if section.settings.show_color_swatches -%}
+  {{ 'component-card-swatches.css' | asset_url | stylesheet_tag }}
+{%- endif -%}
 
 {% if section.settings.image_shape == 'blob' %}
   {{ 'mask-blobs.css' | asset_url | stylesheet_tag }}
@@ -36,6 +39,31 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  #collection-{{ section.id }} .fc-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  #collection-{{ section.id }} .fc-title-row__heading {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  #collection-{{ section.id }} .fc-title-row__heading .title {
+    margin: 0;
+  }
+
+  #collection-{{ section.id }} .fc-title-row__nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+  }
 {%- endstyle -%}
 
 {%- liquid
@@ -66,27 +94,56 @@
     id="collection-{{ section.id }}"
     data-id="{{ section.id }}"
   >
-    <div class="collection__title title-wrapper title-wrapper--no-top-margin page-width{% if show_mobile_slider %} title-wrapper--self-padded-tablet-down{% endif %}{% if show_desktop_slider %} collection__title--desktop-slider{% endif %}">
-      {%- if section.settings.title != blank -%}
-        <h2 class="title inline-richtext {{ section.settings.heading_size }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
-          {{ section.settings.title }}
-        </h2>
-      {%- endif -%}
-      {%- if section.settings.description != blank
-        or section.settings.show_description
-        and section.settings.collection.description != empty
-      -%}
-        <div class="collection__description {{ section.settings.description_style }} rte{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
-          {%- if section.settings.show_description -%}
-            {{ section.settings.collection.description }}
-          {%- else -%}
-            {{ section.settings.description -}}
-          {%- endif %}
-        </div>
-      {%- endif -%}
-    </div>
-
     <slider-component class="slider-mobile-gutter{% if section.settings.full_width %} slider-component-full-width{% endif %}{% if show_mobile_slider == false %} page-width{% endif %}{% if show_desktop_slider == false and section.settings.full_width == false %} page-width-desktop{% endif %}{% if show_desktop_slider %} slider-component-desktop{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+      <div class="collection__title title-wrapper title-wrapper--no-top-margin page-width fc-title-row{% if show_mobile_slider %} title-wrapper--self-padded-tablet-down{% endif %}{% if show_desktop_slider %} collection__title--desktop-slider{% endif %}">
+        <div class="fc-title-row__heading">
+          {%- if section.settings.title != blank -%}
+            <h2 class="title inline-richtext {{ section.settings.heading_size }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+              {{ section.settings.title }}
+            </h2>
+          {%- endif -%}
+          {%- if section.settings.description != blank
+            or section.settings.show_description
+            and section.settings.collection.description != empty
+          -%}
+            <div class="collection__description {{ section.settings.description_style }} rte{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+              {%- if section.settings.show_description -%}
+                {{ section.settings.collection.description }}
+              {%- else -%}
+                {{ section.settings.description -}}
+              {%- endif %}
+            </div>
+          {%- endif -%}
+        </div>
+
+        {%- if show_mobile_slider or show_desktop_slider -%}
+          <div class="slider-buttons fc-title-row__nav">
+            <button
+              type="button"
+              class="slider-button slider-button--prev"
+              name="previous"
+              aria-label="{{ 'general.slider.previous_slide' | t }}"
+              aria-controls="Slider-{{ section.id }}"
+            >
+              <span class="svg-wrapper">
+                {{- 'icon-caret.svg' | inline_asset_content -}}
+              </span>
+            </button>
+            <button
+              type="button"
+              class="slider-button slider-button--next"
+              name="next"
+              aria-label="{{ 'general.slider.next_slide' | t }}"
+              aria-controls="Slider-{{ section.id }}"
+            >
+              <span class="svg-wrapper">
+                {{- 'icon-caret.svg' | inline_asset_content -}}
+              </span>
+            </button>
+          </div>
+        {%- endif -%}
+      </div>
+
       <ul
         id="Slider-{{ section.id }}"
         data-id="{{ section.id }}"
@@ -111,6 +168,7 @@
               show_secondary_image: section.settings.show_secondary_image,
               show_vendor: section.settings.show_vendor,
               show_rating: section.settings.show_rating,
+              show_color_swatches: section.settings.show_color_swatches,
               skip_styles: skip_card_product_styles,
               section_id: section.id,
               quick_add: section.settings.quick_add
@@ -146,38 +204,6 @@
           {%- endfor -%}
         {%- endfor -%}
       </ul>
-      {%- if show_mobile_slider or show_desktop_slider -%}
-        <div class="slider-buttons">
-          <button
-            type="button"
-            class="slider-button slider-button--prev"
-            name="previous"
-            aria-label="{{ 'general.slider.previous_slide' | t }}"
-            aria-controls="Slider-{{ section.id }}"
-          >
-            <span class="svg-wrapper">
-              {{- 'icon-caret.svg' | inline_asset_content -}}
-            </span>
-          </button>
-          <div class="slider-counter caption">
-            <span class="slider-counter--current">1</span>
-            <span aria-hidden="true"> / </span>
-            <span class="visually-hidden">{{ 'general.slider.of' | t }}</span>
-            <span class="slider-counter--total">{{ products_to_display }}</span>
-          </div>
-          <button
-            type="button"
-            class="slider-button slider-button--next"
-            name="next"
-            aria-label="{{ 'general.slider.next_slide' | t }}"
-            aria-controls="Slider-{{ section.id }}"
-          >
-            <span class="svg-wrapper">
-              {{- 'icon-caret.svg' | inline_asset_content -}}
-            </span>
-          </button>
-        </div>
-      {%- endif -%}
     </slider-component>
 
     {%- if section.settings.show_view_all and more_in_collection -%}
@@ -196,6 +222,52 @@
     {%- endif -%}
   </div>
 </div>
+
+{%- if section.settings.show_color_swatches -%}
+  <script>
+    (function () {
+      var root = document.getElementById('collection-{{ section.id }}');
+      if (!root) return;
+
+      function findCardElements(swatch) {
+        var card = swatch.closest('.card-wrapper') || swatch.closest('.card');
+        if (!card) return null;
+        var image = card.querySelector('.card__media img, .media img');
+        var titleLink = card.querySelector('.card__heading a, a.full-unstyled-link');
+        var priceWraps = card.querySelectorAll('.price, .price__container');
+        return { card: card, image: image, titleLink: titleLink, priceWraps: priceWraps };
+      }
+
+      root.addEventListener('click', function (e) {
+        var swatch = e.target.closest('[data-swatch]');
+        if (!swatch) return;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var ctx = findCardElements(swatch);
+        if (!ctx) return;
+
+        var newImage = swatch.getAttribute('data-variant-image');
+        if (ctx.image && newImage) {
+          ctx.image.removeAttribute('srcset');
+          ctx.image.removeAttribute('sizes');
+          ctx.image.src = newImage;
+        }
+
+        var newUrl = swatch.getAttribute('data-variant-url');
+        if (newUrl && ctx.titleLink) {
+          ctx.titleLink.setAttribute('href', newUrl);
+          var mediaLink = ctx.card.querySelector('a[href][class*="media"]');
+          if (mediaLink) mediaLink.setAttribute('href', newUrl);
+        }
+
+        var siblingSwatches = swatch.closest('.card__swatches').querySelectorAll('[data-swatch]');
+        siblingSwatches.forEach(function (s) { s.removeAttribute('aria-pressed'); });
+        swatch.setAttribute('aria-pressed', 'true');
+      });
+    })();
+  </script>
+{%- endif -%}
 
 {% schema %}
 {
@@ -422,6 +494,13 @@
       "default": false,
       "label": "t:sections.featured-collection.settings.show_rating.label",
       "info": "t:sections.featured-collection.settings.show_rating.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_color_swatches",
+      "default": true,
+      "label": "Show color swatches",
+      "info": "Click a swatch on a card to preview that color. Requires the product to have a Color/Colour option with Shopify swatches configured."
     },
     {
       "type": "select",

@@ -205,6 +205,62 @@
             {%- endif -%}
 
             {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+
+            {%- if show_color_swatches and card_product.has_only_default_variant == false -%}
+              {%- assign color_option_index = -1 -%}
+              {%- for option in card_product.options_with_values -%}
+                {%- assign _lowered = option.name | downcase -%}
+                {%- if _lowered contains 'color' or _lowered contains 'colour' -%}
+                  {%- assign color_option_index = forloop.index0 -%}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+              {%- if color_option_index >= 0 -%}
+                {%- assign color_option = card_product.options_with_values[color_option_index] -%}
+                <ul
+                  class="card__swatches"
+                  role="list"
+                  aria-label="{{ color_option.name | escape }}"
+                  data-card-swatches
+                >
+                  {%- for value in color_option.values limit: 6 -%}
+                    {%- liquid
+                      assign matching_variant = value.variant
+                      assign swatch_bg = 'transparent'
+                      if value.swatch.color
+                        assign swatch_bg = 'rgb(' | append: value.swatch.color.rgb | append: ')'
+                      elsif value.swatch.image
+                        assign swatch_img_url = value.swatch.image | image_url: width: 50
+                        assign swatch_bg = 'url(' | append: swatch_img_url | append: ') center/cover no-repeat'
+                      endif
+                      assign variant_image_url = ''
+                      if matching_variant.featured_image
+                        assign variant_image_url = matching_variant.featured_image | image_url: width: 800
+                      endif
+                      assign variant_price_html = ''
+                      if matching_variant
+                        assign variant_price_html = matching_variant.price | money
+                      endif
+                    -%}
+                    <li>
+                      <button
+                        type="button"
+                        class="card__swatch"
+                        style="--card-swatch: {{ swatch_bg }};"
+                        aria-label="{{ value.name | escape }}"
+                        title="{{ value.name | escape }}"
+                        data-swatch
+                        {% if variant_image_url != blank %}data-variant-image="{{ variant_image_url }}"{% endif %}
+                        {% if matching_variant.url %}data-variant-url="{{ matching_variant.url }}"{% endif %}
+                        {% if variant_price_html != blank %}data-variant-price="{{ variant_price_html | escape }}"{% endif %}
+                        {% if forloop.first and matching_variant.id == card_product.selected_or_first_available_variant.id %}aria-pressed="true"{% endif %}
+                      ></button>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            {%- endif -%}
+
             {%- if card_product.quantity_price_breaks_configured? -%}
               {% if card_product.variants.size == 1 and quick_add == 'bulk' %}
                 {% liquid
