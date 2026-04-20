@@ -208,7 +208,6 @@
         "featured_collection_QpwmLx",
         "featured_collection_r6TgQC"
       ],
-      "disabled": true,
       "name": "t:sections.collection-list.presets.name",
       "settings": {
         "title": "Collections",
@@ -297,12 +296,12 @@
         "heading_font": "sans_serif_n7",
         "body_font": "barlow_n4",
         "cta_font": "barlow_n7",
-        "background_color": "#0C0D16",
-        "heading_color": "#FFFFFF",
-        "text_color": "#FFFFFF",
-        "accent_color": "#EED427",
-        "cta_background": "#1A4083",
-        "cta_text_color": "#FFFFFF",
+        "background_color": "#0c0d16",
+        "heading_color": "#ffffff",
+        "text_color": "#ffffff",
+        "accent_color": "#eed427",
+        "cta_background": "#1a4083",
+        "cta_text_color": "#ffffff",
         "device_color": "#111111",
         "padding_top": 96,
         "padding_bottom": 96
