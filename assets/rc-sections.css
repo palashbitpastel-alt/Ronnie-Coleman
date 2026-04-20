@@ -27,7 +27,7 @@
   overflow: hidden;
   background-color: #0C0D16;
   isolation: isolate;
-  box-shadow: var(--rc-hero-shadow, 0 24px 60px rgba(0, 0, 0, 0.35));
+  /* box-shadow: var(--rc-hero-shadow, 0 24px 60px rgba(0, 0, 0, 0.35)); */
 }
 
 .rc-hero-banner__media {
@@ -35,7 +35,7 @@
   inset: 0;
   z-index: 0;
   overflow: hidden;
-  background-color: lightgray;
+  /* background-color: lightgray; */
 }
 .rc-hero-banner__media::after{
   content: "";
@@ -103,7 +103,7 @@
   flex-direction: column;
   gap: 44px;
   width: 100%;
-  max-width: 758px;
+  max-width: 45%;
   color: #FFFFFF;
 }
 

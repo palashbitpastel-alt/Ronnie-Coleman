@@ -14,6 +14,108 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  /* Figma-style overlay tile content — centered, absolute, bottom */
+  #shopify-section-{{ section.id }} .collection-list .card,
+  #shopify-section-{{ section.id }} .collection-list .card__inner {
+    position: relative;
+  }
+
+  #shopify-section-{{ section.id }} .collection-list .card__media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .collection-list .card__media .media {
+    width: 100%;
+    height: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .collection-list .card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  #shopify-section-{{ section.id }} .collection-list .card__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: {{ section.settings.card_overlay_gradient | default: 'linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.75) 100%)' }};
+  }
+
+  #shopify-section-{{ section.id }} .collection-list .card__content {
+    position: absolute;
+    left: 50%;
+    bottom: {{ section.settings.card_content_offset | default: 20 }}px;
+    transform: translateX(-50%);
+    z-index: 2;
+    width: min(88%, 320px);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+  }
+
+  #shopify-section-{{ section.id }} .collection-list .card__information {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .collection-list .card__heading {
+    margin: 0;
+    color: {{ section.settings.card_content_color | default: '#FFFFFF' }};
+    text-align: center;
+  }
+
+  #shopify-section-{{ section.id }} .collection-list .card__heading a,
+  #shopify-section-{{ section.id }} .collection-list .card__heading .full-unstyled-link {
+    color: {{ section.settings.card_content_color | default: '#FFFFFF' }};
+    text-decoration: none;
+  }
+
+  #shopify-section-{{ section.id }} .collection-list .card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: {{ section.settings.card_cta_size | default: 16 }}px;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    color: {{ section.settings.card_cta_color | default: '#FFFFFF' }};
+    pointer-events: none;
+  }
+
+  #shopify-section-{{ section.id }} .collection-list .card__cta-arrow {
+    width: 24px;
+    height: 24px;
+    transition: transform 0.2s ease;
+  }
+
+  #shopify-section-{{ section.id }} .collection-list .collection-list__item:hover .card__cta-arrow,
+  #shopify-section-{{ section.id }} .collection-list .collection-list__item:focus-within .card__cta-arrow {
+    transform: translateX(4px);
+  }
+
+  /* Ensure the full-card click area works — the title link already covers most */
+  #shopify-section-{{ section.id }} .collection-list .card__heading a::after,
+  #shopify-section-{{ section.id }} .collection-list .card__heading a:after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+  }
 {%- endstyle -%}
 
 {%- liquid
@@ -76,7 +178,8 @@
               card_collection: block.settings.collection,
               media_aspect_ratio: section.settings.image_ratio,
               columns: columns,
-              placeholder_image: placeholder_image
+              placeholder_image: placeholder_image,
+              cta_label: section.settings.card_cta_label
             %}
           </li>
         {%- endfor -%}
@@ -219,6 +322,56 @@
       "id": "show_view_all",
       "default": false,
       "label": "t:sections.collection-list.settings.show_view_all.label"
+    },
+    {
+      "type": "header",
+      "content": "Card overlay content"
+    },
+    {
+      "type": "text",
+      "id": "card_cta_label",
+      "label": "CTA label",
+      "default": "Shop Now",
+      "info": "Shown under the collection title on every card. Leave blank to hide."
+    },
+    {
+      "type": "range",
+      "id": "card_cta_size",
+      "label": "CTA font size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "card_content_offset",
+      "label": "Content offset from bottom",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "card_content_color",
+      "label": "Title color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "card_cta_color",
+      "label": "CTA color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "textarea",
+      "id": "card_overlay_gradient",
+      "label": "Overlay gradient",
+      "default": "linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.75) 100%)",
+      "info": "Any CSS background value. Default darkens the bottom for text readability."
     },
     {
       "type": "header",

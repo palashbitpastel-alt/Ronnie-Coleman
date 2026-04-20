@@ -102,18 +102,27 @@
     stroke-width: 2.5px;
   }
 
+  /* Constrain slider to page-width on every breakpoint — no edge bleed */
+  #collection-{{ section.id }} slider-component {
+    --desktop-margin-left-first-item: 0;
+    max-width: var(--page-width, 120rem);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #collection-{{ section.id }} .slider__slide:first-child {
+    margin-left: 0 !important;
+    scroll-margin-left: 0 !important;
+  }
+
+  #collection-{{ section.id }} .slider--desktop:after,
+  #collection-{{ section.id }} .slider--tablet:after {
+    content: none !important;
+  }
+
   @media screen and (min-width: 990px) {
     #collection-{{ section.id }} .slider-component-desktop.page-width {
       max-width: var(--page-width, 120rem);
-    }
-
-    #collection-{{ section.id }} .slider--desktop .slider__slide:first-child {
-      margin-left: 0;
-      scroll-margin-left: 0;
-    }
-
-    #collection-{{ section.id }} .slider--desktop:after {
-      content: none;
     }
   }
 

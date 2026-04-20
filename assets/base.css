@@ -3601,3 +3601,38 @@ details-disclosure > details {
     height: 100%;
     position: relative;
 }
+.collection-list-wrapper .collection-list__item .card__content{
+  position: absolute;
+  bottom: 60px;
+  padding: 0 20px;
+}
+.collection-list-wrapper .collection-list__item .card__content .card__information{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.collection-list-wrapper .collection-list__item .card__content .card__information .show-all-btn{
+color: #FFF;
+font-family: Manderley;
+font-size: 19.6px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+letter-spacing: -3.136px;
+}
+.collection-list-wrapper .collection-list__item .card__content .card__heading{
+color: #FFF;
+text-align: center;
+font-family: "Helvetica Neue";
+font-size: 30.489px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+letter-spacing: -0.915px;
+text-transform: uppercase;
+}
+.collection-list-wrapper .collection-list__item {
+position: relative;
+}
