@@ -218,16 +218,17 @@
     fill: rgba(34, 34, 34, 0.25);
   }
 
-  .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__overlay {
+  {% comment %} .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__overlay {
     position: absolute;
     inset: 0;
     background-color: var(--rc-tile-overlay, #000000);
     opacity: var(--rc-tile-overlay-opacity, 0.35);
     pointer-events: none;
-  }
+  } {% endcomment %}
 
   .section-rc-shop-by-category-{{ section.id }} .rc-shop-by-category__content {
     position: absolute;
+    align-items: center;
     inset: 0;
     z-index: 1;
     display: flex;
