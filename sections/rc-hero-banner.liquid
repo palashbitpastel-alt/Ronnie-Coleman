@@ -6,10 +6,19 @@
   assign cta_label = section.settings.cta_label | default: 'SHOP NOW'
   assign cta_link = section.settings.cta_link | default: '/collections/all'
 
+  assign trust_title = section.settings.trust_title | default: 'Trusted by Millions of Athletes Worldwide'
+  assign trust_subtitle = section.settings.trust_subtitle
+  assign trust_show = section.settings.show_trust_badge
+
+  assign circle_width = section.settings.circle_width | default: 95
+  assign circle_height = section.settings.circle_height | default: 95
+  assign circle_gap = section.settings.circle_gap | default: 16
+
   assign heading_font = section.settings.heading_font
   assign body_font = section.settings.body_font
   assign eyebrow_font = section.settings.eyebrow_font
   assign cta_font = section.settings.cta_font
+  assign trust_font = section.settings.trust_font
 -%}
 
 {%- style -%}
@@ -17,6 +26,7 @@
   {{ body_font | font_face: font_display: 'swap' }}
   {{ eyebrow_font | font_face: font_display: 'swap' }}
   {{ cta_font | font_face: font_display: 'swap' }}
+  {{ trust_font | font_face: font_display: 'swap' }}
 
   .section-rc-hero-banner-{{ section.id }} {
     --rc-heading-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
@@ -31,6 +41,12 @@
     --rc-cta-family: {{ cta_font.family }}, {{ cta_font.fallback_families }};
     --rc-cta-weight: {{ cta_font.weight }};
     --rc-cta-style: {{ cta_font.style }};
+    --rc-trust-family: {{ trust_font.family }}, {{ trust_font.fallback_families }};
+    --rc-trust-weight: {{ trust_font.weight }};
+    --rc-trust-style: {{ trust_font.style }};
+    --rc-circle-width: {{ circle_width }}px;
+    --rc-circle-height: {{ circle_height }}px;
+    --rc-circle-gap: {{ circle_gap }}px;
   }
 {%- endstyle -%}
 
@@ -58,6 +74,38 @@
 
     <div class="rc-hero-banner__content">
       <div class="rc-hero-banner__text">
+        {%- if trust_show -%}
+          <div class="rc-hero-banner__trust">
+            <span class="rc-hero-banner__trust-icon" aria-hidden="true">
+              {%- if section.settings.trust_icon != blank -%}
+                {{ section.settings.trust_icon | image_url: width: 64 | image_tag:
+                  loading: 'eager',
+                  widths: '32,48,64,96',
+                  sizes: '32px',
+                  alt: '',
+                  class: 'rc-hero-banner__trust-icon-img',
+                  width: 32,
+                  height: 32
+                }}
+              {%- else -%}
+                <svg class="rc-hero-banner__trust-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                  <path d="M12 2 3.5 6v6c0 5.25 3.62 9.52 8.5 10.5 4.88-.98 8.5-5.25 8.5-10.5V6L12 2Z" fill="currentColor" opacity=".18"/>
+                  <path d="M12 3.1 4.5 6.55v5.45c0 4.75 3.22 8.6 7.5 9.48 4.28-.88 7.5-4.73 7.5-9.48V6.55L12 3.1Z" stroke="currentColor" stroke-width="1.5"/>
+                  <path d="m8.5 12.1 2.5 2.5L16 9.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              {%- endif -%}
+            </span>
+            <div class="rc-hero-banner__trust-body">
+              {%- if trust_title != blank -%}
+                <p class="rc-hero-banner__trust-title">{{ trust_title | escape }}</p>
+              {%- endif -%}
+              {%- if trust_subtitle != blank -%}
+                <div class="rc-hero-banner__trust-subtitle">{{ trust_subtitle }}</div>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+
         {%- if eyebrow_text != blank -%}
           <p class="rc-hero-banner__eyebrow">{{ eyebrow_text | escape }}</p>
         {%- endif -%}
@@ -72,7 +120,42 @@
       {%- if cta_label != blank and cta_link != blank -%}
         <a class="rc-hero-banner__cta" href="{{ cta_link }}">
           <span class="rc-hero-banner__cta-label">{{ cta_label | escape }}</span>
+          <svg class="rc-hero-banner__cta-arrow" viewBox="0 0 32 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <path d="M1 6h29M25 1l5 5-5 5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </a>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <ul class="rc-hero-banner__circles" role="list">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'circle' -%}
+              <li class="rc-hero-banner__circle-item" {{ block.shopify_attributes }}>
+                {%- if block.settings.link != blank -%}
+                  <a class="rc-hero-banner__circle-link" href="{{ block.settings.link }}" aria-label="{{ block.settings.alt | escape | default: 'Circle image' }}">
+                {%- endif -%}
+                <span class="rc-hero-banner__circle">
+                  {%- if block.settings.image != blank -%}
+                    {{ block.settings.image | image_url: width: 320 | image_tag:
+                      loading: 'lazy',
+                      widths: '96,160,220,320',
+                      sizes: 'var(--rc-circle-width, 95px)',
+                      alt: block.settings.alt | default: '',
+                      class: 'rc-hero-banner__circle-img',
+                      width: circle_width,
+                      height: circle_height
+                    }}
+                  {%- else -%}
+                    <span class="rc-hero-banner__circle-placeholder" aria-hidden="true"></span>
+                  {%- endif -%}
+                </span>
+                {%- if block.settings.link != blank -%}
+                  </a>
+                {%- endif -%}
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
       {%- endif -%}
     </div>
   </div>
@@ -81,7 +164,8 @@
 {%- comment -%}
   All CSS below is scoped with `.section-rc-hero-banner-{{ section.id }}` (unique per
   section instance) or the shared `.rc-hero-banner` class. Values map 1:1 to Figma
-  node 1:94612 (Frame 4 of the Home Page).
+  nodes 1:94612 (Frame 4), 1:94685 (trust badge — Group 14), 1:94714 (Shop Now CTA),
+  1:94719 (circle grid — Frame 35).
 {%- endcomment -%}
 
 {% stylesheet %}
@@ -154,14 +238,14 @@
 
   .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__content {
     position: absolute;
-    top: 29.55%;
+    top: 13%;
     left: 4.22%;
     z-index: 2;
     display: flex;
     flex-direction: column;
-    gap: 44px;
-    width: 39.52%;
-    max-width: 758px;
+    gap: 28px;
+    width: 45%;
+    max-width: 780px;
     color: #FFFFFF;
   }
 
@@ -170,6 +254,71 @@
     flex-direction: column;
     gap: 18px;
     align-items: flex-start;
+  }
+
+  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__trust {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 18px 10px 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #FFFFFF;
+    max-width: 100%;
+  }
+
+  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__trust-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    color: #FFD400;
+  }
+
+  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__trust-icon-img,
+  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__trust-icon-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__trust-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__trust-title {
+    margin: 0;
+    padding: 0;
+    font-family: var(--rc-trust-family);
+    font-weight: var(--rc-trust-weight);
+    font-style: var(--rc-trust-style);
+    font-size: clamp(14px, 0.9375vw, 18px);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    text-transform: none;
+    color: #FFFFFF;
+  }
+
+  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__trust-subtitle {
+    margin: 0;
+    padding: 0;
+    font-family: var(--rc-body-family);
+    font-weight: var(--rc-body-weight);
+    font-size: clamp(12px, 0.729vw, 14px);
+    line-height: 1.35;
+    color: rgba(255, 255, 255, 0.78);
+  }
+
+  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__trust-subtitle p {
+    margin: 0;
   }
 
   .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__eyebrow {
@@ -223,7 +372,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 12px;
     min-width: 193px;
     padding: 18px 28px;
     background-color: #1A4083;
@@ -258,16 +407,91 @@
     display: inline-block;
   }
 
+  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__cta-arrow {
+    display: inline-block;
+    width: 28px;
+    height: 10px;
+    flex: 0 0 28px;
+    color: currentColor;
+    transition: transform 0.2s ease;
+  }
+
+  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__cta:hover .rc-hero-banner__cta-arrow {
+    transform: translateX(4px);
+  }
+
+  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__circles {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--rc-circle-gap);
+  }
+
+  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__circle-item {
+    margin: 0;
+    padding: 0;
+  }
+
+  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__circle-link {
+    display: inline-block;
+    text-decoration: none;
+    outline: none;
+  }
+
+  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__circle-link:focus-visible .rc-hero-banner__circle {
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.6);
+  }
+
+  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--rc-circle-width);
+    height: var(--rc-circle-height);
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__circle-link:hover .rc-hero-banner__circle {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__circle-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__circle-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 100%);
+  }
+
   @media screen and (max-width: 989px) {
     .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__content {
-      top: 22%;
+      top: 8%;
       left: 5%;
-      width: 56%;
-      gap: 32px;
+      width: 58%;
+      gap: 22px;
     }
 
     .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__scrim {
       width: 60%;
+    }
+
+    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__circle {
+      width: calc(var(--rc-circle-width) * 0.85);
+      height: calc(var(--rc-circle-height) * 0.85);
     }
   }
 
@@ -291,15 +515,34 @@
     .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__content {
       position: absolute;
       top: auto;
-      bottom: 6%;
+      bottom: 5%;
       left: 6%;
       right: 6%;
       width: auto;
-      gap: 20px;
+      gap: 16px;
     }
 
     .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__text {
       gap: 12px;
+    }
+
+    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__trust {
+      padding: 8px 12px 8px 10px;
+      gap: 10px;
+    }
+
+    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__trust-icon {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+    }
+
+    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__trust-title {
+      font-size: 13px;
+    }
+
+    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__trust-subtitle {
+      font-size: 12px;
     }
 
     .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__eyebrow {
@@ -321,6 +564,20 @@
       font-size: 14px;
     }
 
+    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__cta-arrow {
+      width: 22px;
+      flex: 0 0 22px;
+    }
+
+    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__circle {
+      width: calc(var(--rc-circle-width) * 0.7);
+      height: calc(var(--rc-circle-height) * 0.7);
+    }
+
+    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__circles {
+      gap: calc(var(--rc-circle-gap) * 0.75);
+    }
+
     .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__ellipse--a {
       width: 220px;
       height: 220px;
@@ -337,11 +594,15 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__cta {
+    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__cta,
+    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__cta-arrow,
+    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__circle {
       transition: none;
     }
     .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__cta:hover,
-    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__cta:focus-visible {
+    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__cta:focus-visible,
+    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__cta:hover .rc-hero-banner__cta-arrow,
+    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__circle-link:hover .rc-hero-banner__circle {
       transform: none;
     }
   }
@@ -398,6 +659,40 @@
       "default": "barlow_n7"
     },
     {
+      "type": "font_picker",
+      "id": "trust_font",
+      "label": "Trust badge font",
+      "default": "barlow_n7"
+    },
+    {
+      "type": "header",
+      "content": "Trust badge"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trust_badge",
+      "label": "Show trust badge",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "trust_icon",
+      "label": "Trust badge icon",
+      "info": "Leave empty to use the built-in shield-check icon."
+    },
+    {
+      "type": "text",
+      "id": "trust_title",
+      "label": "Trust title",
+      "default": "Trusted by Millions of Athletes Worldwide"
+    },
+    {
+      "type": "richtext",
+      "id": "trust_subtitle",
+      "label": "Trust subtitle",
+      "default": "<p>From everyday lifters to elite professionals RCSS fuels those who refuse to quit.</p>"
+    },
+    {
       "type": "header",
       "content": "Text"
     },
@@ -433,6 +728,65 @@
       "type": "url",
       "id": "cta_link",
       "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Circle image grid",
+      "info": "Add circular image tiles that render below the call-to-action. Configure each tile as a block."
+    },
+    {
+      "type": "range",
+      "id": "circle_width",
+      "label": "Circle width",
+      "min": 48,
+      "max": 180,
+      "step": 1,
+      "unit": "px",
+      "default": 95
+    },
+    {
+      "type": "range",
+      "id": "circle_height",
+      "label": "Circle height",
+      "min": 48,
+      "max": 180,
+      "step": 1,
+      "unit": "px",
+      "default": 95
+    },
+    {
+      "type": "range",
+      "id": "circle_gap",
+      "label": "Gap between circles",
+      "min": 0,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    }
+  ],
+  "blocks": [
+    {
+      "type": "circle",
+      "name": "Circle image",
+      "limit": 12,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
     }
   ],
   "presets": [
@@ -441,11 +795,23 @@
       "category": "Image",
       "settings": {
         "alt_text": "Ronnie Coleman hero banner",
+        "show_trust_badge": true,
+        "trust_title": "Trusted by Millions of Athletes Worldwide",
+        "trust_subtitle": "<p>From everyday lifters to elite professionals RCSS fuels those who refuse to quit.</p>",
         "eyebrow": "Ronnie Coleman Signature Series",
         "heading": "YEAH BUDDY™ BUILT FOR WARRIORS",
         "subheading": "<p>Elite nutrition formulated by the 8-time Mr. Olympia. No shortcuts. No compromises.</p>",
-        "cta_label": "SHOP NOW"
-      }
+        "cta_label": "SHOP NOW",
+        "circle_width": 95,
+        "circle_height": 95,
+        "circle_gap": 16
+      },
+      "blocks": [
+        { "type": "circle" },
+        { "type": "circle" },
+        { "type": "circle" },
+        { "type": "circle" }
+      ]
     }
   ]
 }
