@@ -138,20 +138,59 @@
       "settings": {
         "image": "shopify://shop_images/82a6e7809f81f0bd004d4c3235175f7e111a9a3d.png",
         "alt_text": "Ronnie Coleman hero banner",
-        "desktop_full_width": true,
-        "mobile_aspect": "4:5",
-        "show_overlay": true,
         "eyebrow": "Trusted by Millions of Athletes Worldwide.",
         "heading": "BUILT TO INSPIRE. MADE TO PERFORM.",
-        "heading_size": 5,
         "subheading": "<p>Scientifically formulated supplements designed by 8× Mr. Olympia Ronnie Coleman to help you build muscle, recover faster, and dominate every workout.</p>",
         "cta_label": "Shop Now",
-        "cta_link": "shopify://products/volt-cryogenic-freeze",
-        "content_alignment": "middle-left",
-        "text_color": "#ffffff",
-        "cta_bg_color": "#ffd400",
-        "cta_text_color": "#000000",
-        "overlay_opacity": 0
+        "cta_link": "shopify://products/volt-cryogenic-freeze"
+      }
+    },
+    "collection_list_DYjzJf": {
+      "type": "collection-list",
+      "blocks": {
+        "featured_collection_TghjNU": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "jewelry-charm-rings"
+          }
+        },
+        "featured_collection_jjttaa": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "necklaces-body-jewels"
+          }
+        },
+        "featured_collection_wB4rja": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "new-bangles-collection"
+          }
+        },
+        "featured_collection_AjgJR7": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "just-lunched-desk-the-hals"
+          }
+        }
+      },
+      "block_order": [
+        "featured_collection_TghjNU",
+        "featured_collection_jjttaa",
+        "featured_collection_wB4rja",
+        "featured_collection_AjgJR7"
+      ],
+      "name": "t:sections.collection-list.presets.name",
+      "settings": {
+        "title": "",
+        "heading_size": "h1",
+        "image_ratio": "square",
+        "columns_desktop": 4,
+        "color_scheme": "",
+        "show_view_all": false,
+        "columns_mobile": "1",
+        "swipe_on_mobile": true,
+        "padding_top": 12,
+        "padding_bottom": 12
       }
     }
   },
@@ -159,6 +198,7 @@
     "image_banner",
     "featured_collection",
     "slideshow_n79Hbg",
-    "rc_hero_banner_cFXpmB"
+    "rc_hero_banner_cFXpmB",
+    "collection_list_DYjzJf"
   ]
 }
