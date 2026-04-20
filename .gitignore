@@ -1,0 +1,13 @@
+# Dependencies
+node_modules
+**/node_modules
+
+# a5c runtime state
+.a5c/
+
+# Claude Code local state
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
