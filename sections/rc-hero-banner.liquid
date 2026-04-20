@@ -1,3 +1,5 @@
+{{ 'rc-sections.css' | asset_url | stylesheet_tag }}
+
 {%- liquid
   assign alt_text = section.settings.alt_text | default: 'Ronnie Coleman hero banner'
   assign heading_text = section.settings.heading | default: 'YEAH BUDDY™ BUILT FOR WARRIORS'
@@ -31,6 +33,11 @@
     --rc-cta-family: {{ cta_font.family }}, {{ cta_font.fallback_families }};
     --rc-cta-weight: {{ cta_font.weight }};
     --rc-cta-style: {{ cta_font.style }};
+    {%- if section.settings.shadow_enabled -%}
+      --rc-hero-shadow: 0 {{ section.settings.shadow_y }}px {{ section.settings.shadow_blur }}px rgba(0, 0, 0, {{ section.settings.shadow_opacity | divided_by: 100.0 }});
+    {%- else -%}
+      --rc-hero-shadow: none;
+    {%- endif -%}
   }
 {%- endstyle -%}
 
@@ -59,7 +66,14 @@
     <div class="rc-hero-banner__content">
       <div class="rc-hero-banner__text">
         {%- if eyebrow_text != blank -%}
-          <p class="rc-hero-banner__eyebrow">{{ eyebrow_text | escape }}</p>
+          <p class="rc-hero-banner__eyebrow">
+            {%- if section.settings.show_eyebrow_icon -%}
+              <span class="rc-hero-banner__eyebrow-icon" aria-hidden="true">
+                {{- 'rc-hero-eyebrow-icon.svg' | inline_asset_content -}}
+              </span>
+            {%- endif -%}
+            <span class="rc-hero-banner__eyebrow-text">{{ eyebrow_text | escape }}</span>
+          </p>
         {%- endif -%}
         {%- if heading_text != blank -%}
           <h2 class="rc-hero-banner__heading">{{ heading_text | escape }}</h2>
@@ -72,6 +86,11 @@
       {%- if cta_label != blank and cta_link != blank -%}
         <a class="rc-hero-banner__cta" href="{{ cta_link }}">
           <span class="rc-hero-banner__cta-label">{{ cta_label | escape }}</span>
+          {%- if section.settings.show_cta_icon -%}
+            <span class="rc-hero-banner__cta-icon" aria-hidden="true">
+              {{- 'rc-hero-arrow-right.svg' | inline_asset_content -}}
+            </span>
+          {%- endif -%}
         </a>
       {%- endif -%}
     </div>
@@ -84,272 +103,6 @@
   section instance) or the shared `.rc-hero-banner` class. Values map 1:1 to Figma
   node 1:94612 (Frame 4 of the Home Page).
 {%- endcomment -%}
-
-{% stylesheet %}
-  .section-rc-hero-banner-{{ section.id }} {
-    display: block;
-    width: 100%;
-    background-color: #0C0D16;
-  }
-
-  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__frame {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 1920 / 880;
-    overflow: hidden;
-    background-color: #0C0D16;
-    isolation: isolate;
-  }
-
-  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__media {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    overflow: hidden;
-  }
-
-  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__image {
-    display: block;
-    width: 112.55%;
-    height: 123.72%;
-    margin-left: -2.65%;
-    margin-top: -1.72%;
-    object-fit: cover;
-    object-position: center center;
-  }
-
-  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__ellipse {
-    position: absolute;
-    display: block;
-    background-color: #333B0C;
-    opacity: 0.5;
-    filter: blur(100px);
-    pointer-events: none;
-    border-radius: 50%;
-  }
-
-  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__ellipse--a {
-    width: 420px;
-    height: 420px;
-    top: 8%;
-    right: 18%;
-  }
-
-  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__ellipse--b {
-    width: 360px;
-    height: 360px;
-    top: 35%;
-    right: -4%;
-  }
-
-  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__scrim {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 43.77%;
-    height: 100%;
-    z-index: 1;
-    background: linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
-    pointer-events: none;
-  }
-
-  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__content {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 5rem;
-    right:5rem;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    gap: 44px;
-    width: 100%;
-    max-width: 758px;
-    color: #FFFFFF;
-  }
-
-  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__text {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    align-items: flex-start;
-  }
-
-  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__eyebrow {
-    margin: 0;
-    padding: 0;
-    font-family: var(--rc-eyebrow-family);
-    font-weight: var(--rc-eyebrow-weight);
-    font-style: var(--rc-eyebrow-style);
-    font-size: clamp(12px, 0.875vw, 16px);
-    line-height: 1.2;
-    letter-spacing: 0.04em;
-    text-transform: none;
-    color: #FFFFFF;
-    opacity: 0.8;
-  }
-
-  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__heading {
-    margin: 0;
-    padding: 0;
-    font-family: var(--rc-heading-family);
-    font-weight: var(--rc-heading-weight);
-    font-style: var(--rc-heading-style);
-    font-size: clamp(40px, 4.165vw, 80px);
-    line-height: 0.995;
-    letter-spacing: -0.03em;
-    text-transform: uppercase;
-    color: #FFFFFF;
-  }
-
-  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__subheading {
-    margin: 0;
-    padding: 0;
-    font-family: var(--rc-body-family);
-    font-weight: var(--rc-body-weight);
-    font-style: var(--rc-body-style);
-    font-size: clamp(14px, 0.9375vw, 18px);
-    line-height: 1.5;
-    color: #FFFFFF;
-    opacity: 0.85;
-  }
-
-  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__subheading p {
-    margin: 0 0 0.75em 0;
-  }
-
-  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__subheading p:last-child {
-    margin-bottom: 0;
-  }
-
-  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__cta {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    min-width: 193px;
-    padding: 18px 28px;
-    background-color: #1A4083;
-    color: #FFFFFF;
-    border: 0;
-    border-radius: 4px;
-    text-decoration: none;
-    font-family: var(--rc-cta-family);
-    font-weight: var(--rc-cta-weight);
-    font-style: var(--rc-cta-style);
-    font-size: 15px;
-    line-height: 1;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
-    width: max-content;
-    transition: background-color 0.2s ease, transform 0.2s ease, filter 0.2s ease;
-  }
-
-  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__cta:hover,
-  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__cta:focus-visible {
-    background-color: #1A4083;
-    filter: brightness(1.12);
-    transform: translateY(-1px);
-    outline: none;
-  }
-
-  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__cta:focus-visible {
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
-  }
-
-  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__cta-label {
-    display: inline-block;
-  }
-
-  @media screen and (max-width: 989px) {
-    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__content {
-      top: 22%;
-      left: 5%;
-      width: 56%;
-      gap: 32px;
-    }
-
-    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__scrim {
-      width: 60%;
-    }
-  }
-
-  @media screen and (max-width: 749px) {
-    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__frame {
-      aspect-ratio: 4 / 5;
-    }
-
-    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__image {
-      width: 100%;
-      height: 100%;
-      margin-left: 0;
-      margin-top: 0;
-    }
-
-    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__scrim {
-      width: 100%;
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.75) 70%, rgba(0, 0, 0, 0.9) 100%);
-    }
-
-    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__content {
-      position: absolute;
-      top: auto;
-      bottom: 6%;
-      left: 6%;
-      right: 6%;
-      width: auto;
-      gap: 20px;
-    }
-
-    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__text {
-      gap: 12px;
-    }
-
-    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__eyebrow {
-      font-size: 12px;
-    }
-
-    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__heading {
-      font-size: clamp(32px, 8vw, 44px);
-    }
-
-    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__subheading {
-      font-size: 14px;
-    }
-
-    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__cta {
-      min-width: 0;
-      width: 100%;
-      padding: 14px 20px;
-      font-size: 14px;
-    }
-
-    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__ellipse--a {
-      width: 220px;
-      height: 220px;
-      top: 10%;
-      right: -6%;
-    }
-
-    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__ellipse--b {
-      width: 180px;
-      height: 180px;
-      top: 40%;
-      right: -14%;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__cta {
-      transition: none;
-    }
-    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__cta:hover,
-    .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__cta:focus-visible {
-      transform: none;
-    }
-  }
-{% endstylesheet %}
 
 {% schema %}
 {
@@ -409,7 +162,13 @@
       "type": "text",
       "id": "eyebrow",
       "label": "Eyebrow",
-      "default": "Ronnie Coleman Signature Series"
+      "default": "Trusted by Millions of Athletes Worldwide."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_eyebrow_icon",
+      "label": "Show trust icon before eyebrow",
+      "default": true
     },
     {
       "type": "text",
@@ -437,6 +196,52 @@
       "type": "url",
       "id": "cta_link",
       "label": "Button link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta_icon",
+      "label": "Show arrow icon after button label",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Drop shadow"
+    },
+    {
+      "type": "checkbox",
+      "id": "shadow_enabled",
+      "label": "Enable drop shadow",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "shadow_y",
+      "label": "Shadow Y offset",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "shadow_blur",
+      "label": "Shadow blur",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "shadow_opacity",
+      "label": "Shadow opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 35
     }
   ],
   "presets": [
@@ -445,10 +250,12 @@
       "category": "Image",
       "settings": {
         "alt_text": "Ronnie Coleman hero banner",
-        "eyebrow": "Ronnie Coleman Signature Series",
-        "heading": "YEAH BUDDY™ BUILT FOR WARRIORS",
-        "subheading": "<p>Elite nutrition formulated by the 8-time Mr. Olympia. No shortcuts. No compromises.</p>",
-        "cta_label": "SHOP NOW"
+        "eyebrow": "Trusted by Millions of Athletes Worldwide.",
+        "show_eyebrow_icon": true,
+        "heading": "BUILT TO INSPIRE. MADE TO PERFORM.",
+        "subheading": "<p>Scientifically formulated supplements designed by 8× Mr. Olympia Ronnie Coleman to help you build muscle, recover faster, and dominate every workout.</p>",
+        "cta_label": "SHOP NOW",
+        "show_cta_icon": true
       }
     }
   ]

@@ -1,3 +1,7 @@
+{{ 'rc-sections.css' | asset_url | stylesheet_tag }}
+
+{{ 'component-slider.css' | asset_url | stylesheet_tag }}
+
 {%- liquid
   assign heading_text = section.settings.heading
   assign heading_alignment = section.settings.heading_alignment
@@ -5,6 +9,24 @@
   assign columns_tablet = section.settings.columns_tablet | default: 2
   assign columns_mobile = section.settings.columns_mobile | default: 1
   assign image_ratio = section.settings.image_ratio
+
+  assign enable_desktop_slider = section.settings.enable_desktop_slider
+  assign swipe_on_mobile = section.settings.swipe_on_mobile
+
+  assign show_desktop_slider = false
+  if enable_desktop_slider and section.blocks.size > columns_desktop
+    assign show_desktop_slider = true
+  endif
+
+  assign show_mobile_slider = false
+  if swipe_on_mobile and section.blocks.size > columns_mobile
+    assign show_mobile_slider = true
+  endif
+
+  assign is_slider = false
+  if show_desktop_slider or show_mobile_slider
+    assign is_slider = true
+  endif
 
   assign heading_font = section.settings.heading_font
   assign eyebrow_font = section.settings.eyebrow_font
@@ -36,6 +58,8 @@
     --rc-card-bg: {{ section.settings.card_background }};
     --rc-text-color: {{ section.settings.text_color }};
     --rc-glow-color: {{ section.settings.glow_color }};
+    --rc-arrow-bg: {{ section.settings.arrow_background }};
+    --rc-arrow-color: {{ section.settings.arrow_color }};
     --rc-card-radius: {{ section.settings.card_radius }}px;
     --rc-columns-desktop: {{ columns_desktop }};
     --rc-columns-tablet: {{ columns_tablet }};
@@ -45,267 +69,102 @@
   }
 {%- endstyle -%}
 
-<section class="section-rc-top-sellers-{{ section.id }} rc-top-sellers rc-top-sellers--align-{{ heading_alignment }} rc-top-sellers--ratio-{{ image_ratio }}">
+<section class="section-rc-top-sellers-{{ section.id }} rc-top-sellers rc-top-sellers--align-{{ heading_alignment }} rc-top-sellers--ratio-{{ image_ratio }}{% if is_slider %} rc-top-sellers--has-slider{% endif %}">
   <div class="page-width rc-top-sellers__inner">
     {%- if heading_text != blank -%}
       <h2 class="rc-top-sellers__heading">{{ heading_text | escape }}</h2>
     {%- endif -%}
 
-    <ul class="rc-top-sellers__grid" role="list">
-      {%- for block in section.blocks -%}
-        {%- liquid
-          assign card_link = block.settings.link | default: '#'
-          assign card_image = block.settings.image
-          assign card_eyebrow = block.settings.eyebrow
-          assign card_title = block.settings.title
-          assign card_price = block.settings.price_label
-        -%}
-        <li class="rc-top-sellers__item" {{ block.shopify_attributes }}>
-          <a href="{{ card_link }}" class="rc-top-sellers__card">
-            <div class="rc-top-sellers__media">
-              <span class="rc-top-sellers__glow" aria-hidden="true"></span>
-              {%- if card_image != blank -%}
-                {{ card_image | image_url: width: 800 | image_tag:
-                  loading: 'lazy',
-                  widths: '200,300,400,600,800',
-                  sizes: '(min-width: 990px) calc(100vw / var(--rc-columns-desktop)), (min-width: 750px) calc(100vw / var(--rc-columns-tablet)), 100vw',
-                  alt: card_title,
-                  class: 'rc-top-sellers__image'
-                }}
-              {%- else -%}
-                <div class="rc-top-sellers__placeholder" aria-hidden="true">
-                  {{ 'product-1' | placeholder_svg_tag: 'rc-top-sellers__placeholder-svg' }}
-                </div>
-              {%- endif -%}
-            </div>
-            <div class="rc-top-sellers__body">
-              {%- if card_eyebrow != blank -%}
-                <p class="rc-top-sellers__eyebrow">{{ card_eyebrow | escape }}</p>
-              {%- endif -%}
-              <div class="rc-top-sellers__meta">
-                {%- if card_title != blank -%}
-                  <h3 class="rc-top-sellers__title">{{ card_title | escape }}</h3>
-                {%- endif -%}
-                {%- if card_price != blank -%}
-                  <span class="rc-top-sellers__price">{{ card_price | escape }}</span>
+    <slider-component class="rc-top-sellers__slider slider-mobile-gutter">
+      <ul
+        id="Slider-{{ section.id }}"
+        class="rc-top-sellers__grid grid grid--{{ columns_desktop }}-col-desktop grid--{{ columns_mobile }}-col-tablet-down{% if show_mobile_slider or show_desktop_slider %} slider{% if show_desktop_slider %} slider--desktop{% endif %}{% if show_mobile_slider %} slider--tablet grid--peek{% endif %}{% endif %}"
+        role="list"
+        aria-label="{{ heading_text | default: 'Top sellers' | escape }}"
+      >
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign card_link = block.settings.link | default: '#'
+            assign card_image = block.settings.image
+            assign card_eyebrow = block.settings.eyebrow
+            assign card_title = block.settings.title
+            assign card_price = block.settings.price_label
+          -%}
+          <li
+            id="Slide-{{ section.id }}-{{ forloop.index }}"
+            class="rc-top-sellers__item grid__item{% if is_slider %} slider__slide{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            <a href="{{ card_link }}" class="rc-top-sellers__card">
+              <div class="rc-top-sellers__media">
+                <span class="rc-top-sellers__glow" aria-hidden="true"></span>
+                {%- if card_image != blank -%}
+                  {{ card_image | image_url: width: 800 | image_tag:
+                    loading: 'lazy',
+                    widths: '200,300,400,600,800',
+                    sizes: '(min-width: 990px) calc(100vw / var(--rc-columns-desktop)), (min-width: 750px) calc(100vw / var(--rc-columns-tablet)), 100vw',
+                    alt: card_title,
+                    class: 'rc-top-sellers__image'
+                  }}
+                {%- else -%}
+                  <div class="rc-top-sellers__placeholder" aria-hidden="true">
+                    {{ 'product-1' | placeholder_svg_tag: 'rc-top-sellers__placeholder-svg' }}
+                  </div>
                 {%- endif -%}
               </div>
-            </div>
-          </a>
-        </li>
-      {%- endfor -%}
-    </ul>
+              <div class="rc-top-sellers__body">
+                {%- if card_eyebrow != blank -%}
+                  <p class="rc-top-sellers__eyebrow">{{ card_eyebrow | escape }}</p>
+                {%- endif -%}
+                <div class="rc-top-sellers__meta">
+                  {%- if card_title != blank -%}
+                    <h3 class="rc-top-sellers__title">{{ card_title | escape }}</h3>
+                  {%- endif -%}
+                  {%- if card_price != blank -%}
+                    <span class="rc-top-sellers__price">{{ card_price | escape }}</span>
+                  {%- endif -%}
+                </div>
+              </div>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      {%- if is_slider -%}
+        <div class="rc-top-sellers__controls slider-buttons">
+          <button
+            type="button"
+            class="rc-top-sellers__arrow slider-button slider-button--prev"
+            name="previous"
+            aria-label="Previous product"
+            aria-controls="Slider-{{ section.id }}"
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+              <path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="rc-top-sellers__counter slider-counter">
+            <span class="slider-counter--current">1</span>
+            <span aria-hidden="true"> / </span>
+            <span class="visually-hidden">of</span>
+            <span class="slider-counter--total">{{ section.blocks.size }}</span>
+          </div>
+          <button
+            type="button"
+            class="rc-top-sellers__arrow slider-button slider-button--next"
+            name="next"
+            aria-label="Next product"
+            aria-controls="Slider-{{ section.id }}"
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+              <path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      {%- endif -%}
+    </slider-component>
   </div>
 </section>
-
-{% stylesheet %}
-  .section-rc-top-sellers-{{ section.id }} {
-    display: block;
-    width: 100%;
-    background-color: var(--rc-bg, #FFFFFF);
-  }
-
-  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__inner {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-  }
-
-  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__heading {
-    margin: 0;
-    font-family: var(--rc-heading-family);
-    font-weight: var(--rc-heading-weight);
-    font-style: var(--rc-heading-style);
-    font-size: clamp(24px, 2.22vw, 32px);
-    line-height: 1.1;
-    letter-spacing: -0.03em;
-    text-transform: uppercase;
-    color: var(--rc-heading-color, #222222);
-  }
-
-  .section-rc-top-sellers--align-left .rc-top-sellers__heading { text-align: left; }
-  .section-rc-top-sellers--align-center .rc-top-sellers__heading { text-align: center; }
-  .section-rc-top-sellers--align-right .rc-top-sellers__heading { text-align: right; }
-
-  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__grid {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(var(--rc-columns-desktop, 4), minmax(0, 1fr));
-    gap: 24px;
-  }
-
-  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__item {
-    display: flex;
-  }
-
-  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__card {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    background-color: var(--rc-card-bg, #F6F8FB);
-    border-radius: var(--rc-card-radius, 8px);
-    overflow: hidden;
-    text-decoration: none;
-    color: inherit;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-  }
-
-  .section-rc-top-sellers--ratio-adapt .rc-top-sellers__card { aspect-ratio: 428 / 480; }
-  .section-rc-top-sellers--ratio-square .rc-top-sellers__media { aspect-ratio: 1 / 1; }
-  .section-rc-top-sellers--ratio-portrait .rc-top-sellers__media { aspect-ratio: 3 / 4; }
-  .section-rc-top-sellers--ratio-landscape .rc-top-sellers__media { aspect-ratio: 4 / 3; }
-
-  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__card:hover,
-  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__card:focus-visible {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
-    outline: none;
-  }
-
-  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__media {
-    position: relative;
-    flex: 1 1 auto;
-    overflow: hidden;
-    isolation: isolate;
-  }
-
-  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__glow {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 70%;
-    height: 70%;
-    transform: translate(-50%, -50%);
-    background: radial-gradient(closest-side, var(--rc-glow-color, rgba(26, 64, 131, 0.45)) 0%, rgba(26, 64, 131, 0) 75%);
-    filter: blur(24px);
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__image {
-    position: relative;
-    z-index: 1;
-    display: block;
-    width: 80%;
-    height: 80%;
-    margin: 10% auto 0;
-    object-fit: contain;
-    transition: transform 0.4s ease;
-  }
-
-  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__placeholder {
-    position: relative;
-    z-index: 1;
-    width: 80%;
-    height: 80%;
-    margin: 10% auto 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__placeholder-svg {
-    width: 100%;
-    height: 100%;
-    fill: rgba(34, 34, 34, 0.2);
-  }
-
-  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__card:hover .rc-top-sellers__image {
-    transform: scale(1.04);
-  }
-
-  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__body {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 20px 24px 28px;
-  }
-
-  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__eyebrow {
-    margin: 0;
-    font-family: var(--rc-eyebrow-family);
-    font-weight: var(--rc-eyebrow-weight);
-    font-style: var(--rc-eyebrow-style);
-    font-size: 14px;
-    line-height: 1.2;
-    letter-spacing: 0.02em;
-    color: var(--rc-text-color, #222222);
-    opacity: 0.8;
-  }
-
-  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__meta {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 12px;
-  }
-
-  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__title {
-    margin: 0;
-    flex: 1 1 auto;
-    font-family: var(--rc-title-family);
-    font-weight: var(--rc-title-weight);
-    font-style: var(--rc-title-style);
-    font-size: 18px;
-    line-height: 1.2;
-    letter-spacing: -0.03em;
-    text-transform: uppercase;
-    color: var(--rc-text-color, #222222);
-  }
-
-  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__price {
-    flex: 0 0 auto;
-    font-family: var(--rc-price-family);
-    font-weight: var(--rc-price-weight);
-    font-style: var(--rc-price-style);
-    font-size: 18px;
-    line-height: 1.2;
-    color: var(--rc-text-color, #222222);
-    white-space: nowrap;
-  }
-
-  @media screen and (max-width: 989px) {
-    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__grid {
-      grid-template-columns: repeat(var(--rc-columns-tablet, 2), minmax(0, 1fr));
-      gap: 16px;
-    }
-  }
-
-  @media screen and (max-width: 749px) {
-    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__inner {
-      gap: 24px;
-    }
-    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__grid {
-      grid-template-columns: repeat(var(--rc-columns-mobile, 1), minmax(0, 1fr));
-    }
-    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__body {
-      padding: 14px 16px 20px;
-    }
-    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__title,
-    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__price {
-      font-size: 15px;
-    }
-    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__eyebrow {
-      font-size: 12px;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__card,
-    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__image {
-      transition: none;
-    }
-    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__card:hover,
-    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__card:focus-visible {
-      transform: none;
-    }
-    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__card:hover .rc-top-sellers__image {
-      transform: none;
-    }
-  }
-{% endstylesheet %}
 
 {% schema %}
 {
@@ -315,7 +174,7 @@
   "disabled_on": {
     "groups": ["header", "footer"]
   },
-  "max_blocks": 12,
+  "max_blocks": 16,
   "settings": [
     {
       "type": "text",
@@ -389,6 +248,35 @@
       "step": 2,
       "unit": "px",
       "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Slider",
+      "info": "Slider arrows appear when there are more products than columns shown."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_desktop_slider",
+      "label": "Enable slider on desktop",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "swipe_on_mobile",
+      "label": "Swipe slider on mobile",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "arrow_background",
+      "label": "Arrow background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "arrow_color",
+      "label": "Arrow color",
+      "default": "#222222"
     },
     {
       "type": "header",
@@ -517,11 +405,17 @@
     {
       "name": "Top sellers (rc)",
       "category": "Product",
+      "settings": {
+        "enable_desktop_slider": true,
+        "swipe_on_mobile": true
+      },
       "blocks": [
         { "type": "product", "settings": { "title": "YEAH BUDDY™ Pre-Workout Powder", "price_label": "From $34.99" } },
         { "type": "product", "settings": { "title": "Yeah Buddy Sport Pre-Workout", "price_label": "From $26.99" } },
         { "type": "product", "settings": { "title": "L-Carnitine XS Liquid 3,000MG", "price_label": "From $34.99" } },
-        { "type": "product", "settings": { "title": "Creatine XS Unflavoured Powder", "price_label": "From $49.99" } }
+        { "type": "product", "settings": { "title": "Creatine XS Unflavoured Powder", "price_label": "From $49.99" } },
+        { "type": "product", "settings": { "title": "EAA XS Amino Fuel", "price_label": "From $39.99" } },
+        { "type": "product", "settings": { "title": "ISO-Tropic MAX Protein", "price_label": "From $54.99" } }
       ]
     }
   ]
