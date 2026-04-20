@@ -202,6 +202,212 @@
         "shadow_blur": 60,
         "shadow_opacity": 35
       }
+    },
+    "rc_shop_by_category_MbAkaV": {
+      "type": "rc-shop-by-category",
+      "blocks": {
+        "featured_collection_CRfkdY": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "charm-dangles"
+          }
+        },
+        "featured_collection_nMKJ3a": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "culture-of-ring-design"
+          }
+        },
+        "featured_collection_mXfaRT": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "jewelry-charm-rings"
+          }
+        },
+        "featured_collection_LzyLJH": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "just-lunched-desk-the-hals"
+          }
+        },
+        "featured_collection_gLAaRw": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "new-bangles-collection"
+          }
+        }
+      },
+      "block_order": [
+        "featured_collection_CRfkdY",
+        "featured_collection_nMKJ3a",
+        "featured_collection_mXfaRT",
+        "featured_collection_LzyLJH",
+        "featured_collection_gLAaRw"
+      ],
+      "disabled": true,
+      "name": "Shop by category (rc)",
+      "settings": {
+        "title": "SHOP BY CATEGORY",
+        "heading_size": "h1",
+        "image_ratio": "portrait",
+        "columns_desktop": 4,
+        "color_scheme": "",
+        "slider_arrow_color": "#1a4083",
+        "show_view_all": false,
+        "columns_mobile": "1",
+        "swipe_on_mobile": true,
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    },
+    "rc_top_sellers_3EJRWm": {
+      "type": "rc-top-sellers",
+      "name": "Top sellers (rc)",
+      "settings": {
+        "title": "TOP SELLERS",
+        "heading_size": "h1",
+        "description": "",
+        "show_description": false,
+        "description_style": "body",
+        "collection": "for-slider",
+        "products_to_show": 8,
+        "columns_desktop": 4,
+        "full_width": false,
+        "show_view_all": false,
+        "view_all_style": "solid",
+        "enable_desktop_slider": true,
+        "slider_arrow_color": "#1a4083",
+        "color_scheme": "",
+        "image_ratio": "adapt",
+        "image_shape": "default",
+        "show_secondary_image": false,
+        "show_vendor": false,
+        "show_rating": false,
+        "quick_add": "none",
+        "columns_mobile": "1",
+        "swipe_on_mobile": true,
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "rc_shop_by_category_GBN8pq": {
+      "type": "rc-shop-by-category",
+      "blocks": {
+        "featured_collection_7Xmfp8": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "culture-of-ring-design"
+          }
+        },
+        "featured_collection_b9JBAt": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": ""
+          }
+        },
+        "featured_collection_VRtFRF": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": ""
+          }
+        },
+        "featured_collection_L88CnJ": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": ""
+          }
+        }
+      },
+      "block_order": [
+        "featured_collection_7Xmfp8",
+        "featured_collection_b9JBAt",
+        "featured_collection_VRtFRF",
+        "featured_collection_L88CnJ"
+      ],
+      "name": "Shop by category (rc)",
+      "settings": {
+        "title": "SHOP BY CATEGORY",
+        "heading_size": "h1",
+        "image_ratio": "square",
+        "columns_desktop": 3,
+        "color_scheme": "",
+        "slider_arrow_color": "#1A4083",
+        "show_view_all": false,
+        "columns_mobile": "1",
+        "swipe_on_mobile": true,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "collection_list_8Ux38c": {
+      "type": "collection-list",
+      "blocks": {
+        "featured_collection_zWmd3R": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "bracelets"
+          }
+        },
+        "featured_collection_QpwmLx": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": ""
+          }
+        },
+        "featured_collection_r6TgQC": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": ""
+          }
+        }
+      },
+      "block_order": [
+        "featured_collection_zWmd3R",
+        "featured_collection_QpwmLx",
+        "featured_collection_r6TgQC"
+      ],
+      "name": "t:sections.collection-list.presets.name",
+      "settings": {
+        "title": "Collections",
+        "heading_size": "h1",
+        "image_ratio": "square",
+        "columns_desktop": 3,
+        "color_scheme": "",
+        "show_view_all": false,
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "featured_collection_6HABgr": {
+      "type": "featured-collection",
+      "name": "t:sections.featured-collection.presets.name",
+      "settings": {
+        "title": "Featured collection",
+        "heading_size": "h1",
+        "description": "",
+        "show_description": false,
+        "description_style": "body",
+        "collection": "for-slider",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "full_width": false,
+        "show_view_all": false,
+        "view_all_style": "solid",
+        "enable_desktop_slider": true,
+        "color_scheme": "",
+        "image_ratio": "adapt",
+        "image_shape": "default",
+        "show_secondary_image": false,
+        "show_vendor": false,
+        "show_rating": false,
+        "quick_add": "none",
+        "columns_mobile": "2",
+        "swipe_on_mobile": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
     }
   },
   "order": [
@@ -210,6 +416,11 @@
     "slideshow_n79Hbg",
     "rc_hero_banner_cFXpmB",
     "rc_featured_collection_CBjyjq",
-    "rc_hero_banner_BGfjaB"
+    "rc_hero_banner_BGfjaB",
+    "rc_shop_by_category_MbAkaV",
+    "rc_top_sellers_3EJRWm",
+    "rc_shop_by_category_GBN8pq",
+    "collection_list_8Ux38c",
+    "featured_collection_6HABgr"
   ]
 }
