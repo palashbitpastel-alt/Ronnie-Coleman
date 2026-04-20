@@ -202,92 +202,6 @@
         "shadow_blur": 60,
         "shadow_opacity": 35
       }
-    },
-    "rc_shop_by_category_MbAkaV": {
-      "type": "rc-shop-by-category",
-      "blocks": {
-        "featured_collection_CRfkdY": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "charm-dangles"
-          }
-        },
-        "featured_collection_nMKJ3a": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "culture-of-ring-design"
-          }
-        },
-        "featured_collection_mXfaRT": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "jewelry-charm-rings"
-          }
-        },
-        "featured_collection_LzyLJH": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "just-lunched-desk-the-hals"
-          }
-        },
-        "featured_collection_gLAaRw": {
-          "type": "featured_collection",
-          "settings": {
-            "collection": "new-bangles-collection"
-          }
-        }
-      },
-      "block_order": [
-        "featured_collection_CRfkdY",
-        "featured_collection_nMKJ3a",
-        "featured_collection_mXfaRT",
-        "featured_collection_LzyLJH",
-        "featured_collection_gLAaRw"
-      ],
-      "name": "Shop by category (rc)",
-      "settings": {
-        "title": "SHOP BY CATEGORY",
-        "heading_size": "h1",
-        "image_ratio": "portrait",
-        "columns_desktop": 4,
-        "color_scheme": "",
-        "slider_arrow_color": "#1a4083",
-        "show_view_all": false,
-        "columns_mobile": "1",
-        "swipe_on_mobile": true,
-        "padding_top": 60,
-        "padding_bottom": 60
-      }
-    },
-    "rc_top_sellers_3EJRWm": {
-      "type": "rc-top-sellers",
-      "name": "Top sellers (rc)",
-      "settings": {
-        "title": "TOP SELLERS",
-        "heading_size": "h1",
-        "description": "",
-        "show_description": false,
-        "description_style": "body",
-        "collection": "for-slider",
-        "products_to_show": 8,
-        "columns_desktop": 4,
-        "full_width": false,
-        "show_view_all": false,
-        "view_all_style": "solid",
-        "enable_desktop_slider": true,
-        "slider_arrow_color": "#1a4083",
-        "color_scheme": "",
-        "image_ratio": "adapt",
-        "image_shape": "default",
-        "show_secondary_image": false,
-        "show_vendor": false,
-        "show_rating": false,
-        "quick_add": "none",
-        "columns_mobile": "1",
-        "swipe_on_mobile": true,
-        "padding_top": 80,
-        "padding_bottom": 80
-      }
     }
   },
   "order": [
@@ -296,8 +210,6 @@
     "slideshow_n79Hbg",
     "rc_hero_banner_cFXpmB",
     "rc_featured_collection_CBjyjq",
-    "rc_hero_banner_BGfjaB",
-    "rc_shop_by_category_MbAkaV",
-    "rc_top_sellers_3EJRWm"
+    "rc_hero_banner_BGfjaB"
   ]
 }
