@@ -306,6 +306,76 @@
         "padding_top": 96,
         "padding_bottom": 96
       }
+    },
+    "rc_faq_gYYjNr": {
+      "type": "rc-faq",
+      "blocks": {
+        "faq_item_9R4GKh": {
+          "type": "faq_item",
+          "settings": {
+            "question": "How fast will my order ship?",
+            "answer": "<p>Most orders ship within 24–48 hours. You'll receive tracking info by email as soon as your package leaves our warehouse.</p>",
+            "default_open": true
+          }
+        },
+        "faq_item_8xgnbA": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What if I don't like the product?",
+            "answer": "<p>We stand behind every product. Reach out within 30 days of purchase for a refund or replacement — no questions asked.</p>",
+            "default_open": false
+          }
+        },
+        "faq_item_hDrfLd": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Are your supplements safe?",
+            "answer": "<p>Yes. Every Ronnie Coleman Signature Series formula is manufactured in GMP-certified facilities and third-party tested for purity and potency.</p>",
+            "default_open": false
+          }
+        },
+        "faq_item_XzUYwR": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you ship internationally?",
+            "answer": "<p>We ship to most countries worldwide. Shipping options and rates are calculated at checkout based on your destination.</p>",
+            "default_open": false
+          }
+        },
+        "faq_item_wgc7Jf": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Can I get support if I have product questions?",
+            "answer": "<p>Absolutely. Our support team is available via email and chat — we're happy to help with product selection, stacking advice, or order issues.</p>",
+            "default_open": false
+          }
+        }
+      },
+      "block_order": [
+        "faq_item_9R4GKh",
+        "faq_item_8xgnbA",
+        "faq_item_hDrfLd",
+        "faq_item_XzUYwR",
+        "faq_item_wgc7Jf"
+      ],
+      "name": "FAQ (rc)",
+      "settings": {
+        "heading": "FAQ",
+        "heading_alignment": "center",
+        "layout_style": "list",
+        "heading_font": "sans_serif_n7",
+        "question_font": "barlow_n7",
+        "answer_font": "barlow_n4",
+        "background_color": "#0C0D16",
+        "heading_color": "#FFFFFF",
+        "question_color": "#FFFFFF",
+        "answer_color": "#FFFFFF",
+        "border_color": "#303140",
+        "card_background": "#141525",
+        "icon_color": "#FFFFFF",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
     }
   },
   "order": [
@@ -316,6 +386,7 @@
     "rc_hero_banner_BGfjaB",
     "collection_list_8Ux38c",
     "featured_collection_6HABgr",
-    "rc_app_promo_RhmtK4"
+    "rc_app_promo_RhmtK4",
+    "rc_faq_gYYjNr"
   ]
 }
