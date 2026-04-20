@@ -2,7 +2,15 @@
 {{ 'component-card.css' | asset_url | stylesheet_tag }}
 {{ 'component-slider.css' | asset_url | stylesheet_tag }}
 
+{%- liquid
+  assign card_title_font = section.settings.card_title_font
+  assign card_cta_font = section.settings.card_cta_font
+-%}
+
 {%- style -%}
+  {{ card_title_font | font_face: font_display: 'swap' }}
+  {{ card_cta_font | font_face: font_display: 'swap' }}
+
   .section-{{ section.id }}-padding {
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
     padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
@@ -13,6 +21,15 @@
       padding-top: {{ section.settings.padding_top }}px;
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
+  }
+
+  #shopify-section-{{ section.id }} {
+    --rc-card-title-family: {{ card_title_font.family }}, {{ card_title_font.fallback_families }};
+    --rc-card-title-weight: {{ card_title_font.weight }};
+    --rc-card-title-style: {{ card_title_font.style }};
+    --rc-card-cta-family: {{ card_cta_font.family }}, {{ card_cta_font.fallback_families }};
+    --rc-card-cta-weight: {{ card_cta_font.weight }};
+    --rc-card-cta-style: {{ card_cta_font.style }};
   }
 
   /* Figma-style overlay tile content — centered, absolute, bottom */
@@ -50,7 +67,12 @@
     background: {{ section.settings.card_overlay_gradient | default: 'linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.75) 100%)' }};
   }
 
-  #shopify-section-{{ section.id }} .collection-list .card__content {
+  /* Hide Dawn's inner duplicate content when the card has an image */
+  #shopify-section-{{ section.id }} .collection-list .card--media .card__inner .card__content {
+    display: none;
+  }
+
+  #shopify-section-{{ section.id }} .collection-list .card > .card__content {
     position: absolute;
     left: 50%;
     bottom: {{ section.settings.card_content_offset | default: 20 }}px;
@@ -65,7 +87,7 @@
     text-align: center;
   }
 
-  #shopify-section-{{ section.id }} .collection-list .card__information {
+  #shopify-section-{{ section.id }} .collection-list .card > .card__content .card__information {
     padding: 0;
     display: flex;
     flex-direction: column;
@@ -78,20 +100,28 @@
     margin: 0;
     color: {{ section.settings.card_content_color | default: '#FFFFFF' }};
     text-align: center;
+    font-family: var(--rc-card-title-family);
+    font-weight: var(--rc-card-title-weight);
+    font-style: var(--rc-card-title-style);
   }
 
   #shopify-section-{{ section.id }} .collection-list .card__heading a,
   #shopify-section-{{ section.id }} .collection-list .card__heading .full-unstyled-link {
     color: {{ section.settings.card_content_color | default: '#FFFFFF' }};
     text-decoration: none;
+    font-family: inherit;
+    font-weight: inherit;
+    font-style: inherit;
   }
 
   #shopify-section-{{ section.id }} .collection-list .card__cta {
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    font-family: var(--rc-card-cta-family);
+    font-weight: var(--rc-card-cta-weight);
+    font-style: var(--rc-card-cta-style);
     font-size: {{ section.settings.card_cta_size | default: 16 }}px;
-    font-weight: 500;
     letter-spacing: -0.03em;
     color: {{ section.settings.card_cta_color | default: '#FFFFFF' }};
     pointer-events: none;
@@ -326,6 +356,18 @@
     {
       "type": "header",
       "content": "Card overlay content"
+    },
+    {
+      "type": "font_picker",
+      "id": "card_title_font",
+      "label": "Collection name font",
+      "default": "helvetica_n7"
+    },
+    {
+      "type": "font_picker",
+      "id": "card_cta_font",
+      "label": "CTA font",
+      "default": "barlow_n7"
     },
     {
       "type": "text",
