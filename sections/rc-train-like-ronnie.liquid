@@ -1,0 +1,378 @@
+{%- liquid
+  assign heading_text = section.settings.heading
+  assign subheading_text = section.settings.subheading
+  assign cta_label = section.settings.cta_label
+  assign cta_link = section.settings.cta_link
+  assign alt_text = section.settings.alt_text | default: heading_text
+
+  assign heading_font = section.settings.heading_font
+  assign subheading_font = section.settings.subheading_font
+  assign cta_font = section.settings.cta_font
+-%}
+
+{%- style -%}
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ subheading_font | font_face: font_display: 'swap' }}
+  {{ cta_font | font_face: font_display: 'swap' }}
+
+  .section-rc-train-like-ronnie-{{ section.id }} {
+    --rc-heading-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --rc-heading-weight: {{ heading_font.weight }};
+    --rc-heading-style: {{ heading_font.style }};
+    --rc-subheading-family: {{ subheading_font.family }}, {{ subheading_font.fallback_families }};
+    --rc-subheading-weight: {{ subheading_font.weight }};
+    --rc-subheading-style: {{ subheading_font.style }};
+    --rc-cta-family: {{ cta_font.family }}, {{ cta_font.fallback_families }};
+    --rc-cta-weight: {{ cta_font.weight }};
+    --rc-cta-style: {{ cta_font.style }};
+    --rc-text-color: {{ section.settings.text_color }};
+    --rc-cta-bg: {{ section.settings.cta_background }};
+    --rc-cta-text: {{ section.settings.cta_text_color }};
+    --rc-scrim-color: {{ section.settings.scrim_color }};
+  }
+{%- endstyle -%}
+
+<section class="section-rc-train-like-ronnie-{{ section.id }} rc-train-like-ronnie rc-train-like-ronnie--scrim-{{ section.settings.scrim_side }}">
+  <div class="rc-train-like-ronnie__frame">
+    <div class="rc-train-like-ronnie__media">
+      {%- if section.settings.image != blank -%}
+        {{ section.settings.image | image_url: width: 3840 | image_tag:
+          loading: 'lazy',
+          widths: '480,768,1024,1440,1920,2560,3840',
+          sizes: '100vw',
+          alt: alt_text,
+          class: 'rc-train-like-ronnie__image',
+          width: section.settings.image.width,
+          height: section.settings.image.height
+        }}
+      {%- endif -%}
+    </div>
+
+    <div class="rc-train-like-ronnie__scrim" aria-hidden="true"></div>
+
+    <div class="page-width rc-train-like-ronnie__wrapper">
+      <div class="rc-train-like-ronnie__content">
+        {%- if heading_text != blank -%}
+          <h2 class="rc-train-like-ronnie__heading">{{ heading_text | escape }}</h2>
+        {%- endif -%}
+        {%- if subheading_text != blank -%}
+          <p class="rc-train-like-ronnie__subheading">{{ subheading_text | escape }}</p>
+        {%- endif -%}
+        {%- if cta_label != blank -%}
+          <a class="rc-train-like-ronnie__cta" href="{{ cta_link | default: '#' }}">
+            <span>{{ cta_label | escape }}</span>
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .section-rc-train-like-ronnie-{{ section.id }} {
+    display: block;
+    width: 100%;
+    background-color: #000000;
+  }
+
+  .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1920 / 560;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+  }
+
+  .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .section-rc-train-like-ronnie--scrim-left .rc-train-like-ronnie__scrim {
+    background: linear-gradient(90deg, var(--rc-scrim-color, #020101) 0%, var(--rc-scrim-color, #020101) 18%, rgba(2, 1, 1, 0) 70%);
+  }
+
+  .section-rc-train-like-ronnie--scrim-right .rc-train-like-ronnie__scrim {
+    background: linear-gradient(270deg, var(--rc-scrim-color, #020101) 0%, var(--rc-scrim-color, #020101) 18%, rgba(2, 1, 1, 0) 70%);
+  }
+
+  .section-rc-train-like-ronnie--scrim-center .rc-train-like-ronnie__scrim {
+    background: radial-gradient(ellipse at center, var(--rc-scrim-color, #020101) 0%, rgba(2, 1, 1, 0.3) 60%, rgba(2, 1, 1, 0) 100%);
+  }
+
+  .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__wrapper {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 720px;
+    color: var(--rc-text-color, #FFFFFF);
+  }
+
+  .section-rc-train-like-ronnie--scrim-right .rc-train-like-ronnie__content {
+    margin-left: auto;
+    text-align: right;
+    align-items: flex-end;
+  }
+
+  .section-rc-train-like-ronnie--scrim-center .rc-train-like-ronnie__content {
+    margin: 0 auto;
+    text-align: center;
+    align-items: center;
+  }
+
+  .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__heading {
+    margin: 0;
+    font-family: var(--rc-heading-family);
+    font-weight: var(--rc-heading-weight);
+    font-style: var(--rc-heading-style);
+    font-size: clamp(28px, 3.33vw, 48px);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    color: var(--rc-text-color, #FFFFFF);
+  }
+
+  .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__subheading {
+    margin: 0;
+    font-family: var(--rc-subheading-family);
+    font-weight: var(--rc-subheading-weight);
+    font-style: var(--rc-subheading-style);
+    font-size: clamp(22px, 2.5vw, 36px);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--rc-text-color, #FFFFFF);
+    opacity: 0.92;
+  }
+
+  .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: max-content;
+    min-width: 193px;
+    padding: 18px 32px;
+    margin-top: 12px;
+    background-color: var(--rc-cta-bg, #1A4083);
+    color: var(--rc-cta-text, #FFFFFF);
+    border-radius: 4px;
+    text-decoration: none;
+    font-family: var(--rc-cta-family);
+    font-weight: var(--rc-cta-weight);
+    font-style: var(--rc-cta-style);
+    font-size: 16px;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: filter 0.2s ease, transform 0.2s ease;
+  }
+
+  .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__cta:hover,
+  .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__cta:focus-visible {
+    filter: brightness(1.12);
+    transform: translateY(-1px);
+    outline: none;
+  }
+
+  .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__cta:focus-visible {
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
+  }
+
+  @media screen and (max-width: 989px) {
+    .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__frame {
+      aspect-ratio: 4 / 3;
+    }
+    .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__content {
+      max-width: 60%;
+      gap: 18px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__frame {
+      aspect-ratio: 3 / 4;
+    }
+
+    .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__scrim {
+      background: linear-gradient(180deg, rgba(2, 1, 1, 0.25) 0%, rgba(2, 1, 1, 0.85) 100%) !important;
+    }
+
+    .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__wrapper {
+      align-items: flex-end;
+      padding-bottom: 32px;
+    }
+
+    .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__content,
+    .section-rc-train-like-ronnie--scrim-right .rc-train-like-ronnie__content {
+      max-width: 100%;
+      margin: 0;
+      text-align: left;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__cta {
+      width: 100%;
+      min-width: 0;
+      padding: 14px 20px;
+      font-size: 14px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__cta {
+      transition: none;
+    }
+    .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__cta:hover,
+    .section-rc-train-like-ronnie-{{ section.id }} .rc-train-like-ronnie__cta:focus-visible {
+      transform: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Train like Ronnie banner (rc)",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "text",
+      "id": "alt_text",
+      "label": "Image alt text"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Wanna train like Ronnie?"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Check out the awesome stuff made by a legend!"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "helvetica_n7"
+    },
+    {
+      "type": "font_picker",
+      "id": "subheading_font",
+      "label": "Subheading font",
+      "default": "helvetica_n4"
+    },
+    {
+      "type": "font_picker",
+      "id": "cta_font",
+      "label": "Button font",
+      "default": "barlow_n7"
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Overlay & colors"
+    },
+    {
+      "type": "select",
+      "id": "scrim_side",
+      "label": "Dark scrim position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "color",
+      "id": "scrim_color",
+      "label": "Scrim color",
+      "default": "#020101"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "cta_background",
+      "label": "Button background",
+      "default": "#1A4083"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "Button text color",
+      "default": "#FFFFFF"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Train like Ronnie banner (rc)",
+      "category": "Image",
+      "settings": {
+        "heading": "Wanna train like Ronnie?",
+        "subheading": "Check out the awesome stuff made by a legend!",
+        "cta_label": "SHOP NOW",
+        "scrim_side": "left"
+      }
+    }
+  ]
+}
+{% endschema %}

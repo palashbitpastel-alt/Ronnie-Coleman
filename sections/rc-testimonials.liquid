@@ -1,0 +1,504 @@
+{%- liquid
+  assign heading_text = section.settings.heading
+  assign subheading_text = section.settings.subheading
+  assign cta_label = section.settings.cta_label
+  assign cta_link = section.settings.cta_link
+
+  assign heading_font = section.settings.heading_font
+  assign body_font = section.settings.body_font
+  assign name_font = section.settings.name_font
+  assign cta_font = section.settings.cta_font
+-%}
+
+{%- style -%}
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ body_font | font_face: font_display: 'swap' }}
+  {{ name_font | font_face: font_display: 'swap' }}
+  {{ cta_font | font_face: font_display: 'swap' }}
+
+  .section-rc-testimonials-{{ section.id }} {
+    --rc-heading-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --rc-heading-weight: {{ heading_font.weight }};
+    --rc-heading-style: {{ heading_font.style }};
+    --rc-body-family: {{ body_font.family }}, {{ body_font.fallback_families }};
+    --rc-body-weight: {{ body_font.weight }};
+    --rc-body-style: {{ body_font.style }};
+    --rc-name-family: {{ name_font.family }}, {{ name_font.fallback_families }};
+    --rc-name-weight: {{ name_font.weight }};
+    --rc-name-style: {{ name_font.style }};
+    --rc-cta-family: {{ cta_font.family }}, {{ cta_font.fallback_families }};
+    --rc-cta-weight: {{ cta_font.weight }};
+    --rc-cta-style: {{ cta_font.style }};
+    --rc-bg: {{ section.settings.background_color }};
+    --rc-heading-color: {{ section.settings.heading_color }};
+    --rc-text-color: {{ section.settings.text_color }};
+    --rc-star-color: {{ section.settings.star_color }};
+    --rc-card-bg: {{ section.settings.card_background }};
+    --rc-cta-bg: {{ section.settings.cta_background }};
+    --rc-cta-text: {{ section.settings.cta_text_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+<section class="section-rc-testimonials-{{ section.id }} rc-testimonials">
+  <div class="page-width rc-testimonials__inner">
+    <header class="rc-testimonials__header">
+      {%- if heading_text != blank -%}
+        <h2 class="rc-testimonials__heading">{{ heading_text | escape }}</h2>
+      {%- endif -%}
+      {%- if subheading_text != blank -%}
+        <p class="rc-testimonials__subheading">{{ subheading_text | escape }}</p>
+      {%- endif -%}
+    </header>
+
+    <div class="rc-testimonials__grid">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign stars = block.settings.rating | default: 5
+          assign quote = block.settings.quote
+          assign name = block.settings.name
+          assign avatar = block.settings.avatar
+        -%}
+        <article class="rc-testimonials__card" {{ block.shopify_attributes }}>
+          <div class="rc-testimonials__stars" aria-label="Rated {{ stars }} out of 5">
+            {%- for i in (1..5) -%}
+              {%- if i <= stars -%}
+                <svg class="rc-testimonials__star rc-testimonials__star--filled" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+                  <path d="M12 2.5l2.95 5.98 6.6.96-4.78 4.66 1.13 6.58L12 17.58l-5.9 3.1 1.13-6.58L2.45 9.44l6.6-.96L12 2.5z" fill="currentColor"/>
+                </svg>
+              {%- else -%}
+                <svg class="rc-testimonials__star rc-testimonials__star--empty" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+                  <path d="M12 2.5l2.95 5.98 6.6.96-4.78 4.66 1.13 6.58L12 17.58l-5.9 3.1 1.13-6.58L2.45 9.44l6.6-.96L12 2.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                </svg>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          {%- if quote != blank -%}
+            <blockquote class="rc-testimonials__quote">{{ quote }}</blockquote>
+          {%- endif -%}
+
+          <footer class="rc-testimonials__person">
+            <span class="rc-testimonials__avatar">
+              {%- if avatar != blank -%}
+                {{ avatar | image_url: width: 180 | image_tag:
+                  loading: 'lazy',
+                  widths: '90,180',
+                  sizes: '90px',
+                  alt: name,
+                  class: 'rc-testimonials__avatar-image'
+                }}
+              {%- else -%}
+                <svg viewBox="0 0 90 90" width="90" height="90" aria-hidden="true" focusable="false">
+                  <circle cx="45" cy="45" r="45" fill="#E3E7EE"/>
+                  <circle cx="45" cy="36" r="16" fill="#B9C1CC"/>
+                  <path d="M15 80c4-16 16-24 30-24s26 8 30 24" fill="#B9C1CC"/>
+                </svg>
+              {%- endif -%}
+            </span>
+            {%- if name != blank -%}
+              <span class="rc-testimonials__name">{{ name | escape }}</span>
+            {%- endif -%}
+          </footer>
+        </article>
+      {%- endfor -%}
+    </div>
+
+    {%- if cta_label != blank -%}
+      <div class="rc-testimonials__cta-wrap">
+        <a class="rc-testimonials__cta" href="{{ cta_link | default: '#' }}">
+          <span>{{ cta_label | escape }}</span>
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .section-rc-testimonials-{{ section.id }} {
+    display: block;
+    width: 100%;
+    background-color: var(--rc-bg, #FFFFFF);
+  }
+
+  .section-rc-testimonials-{{ section.id }} .rc-testimonials__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .section-rc-testimonials-{{ section.id }} .rc-testimonials__header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 760px;
+    text-align: center;
+  }
+
+  .section-rc-testimonials-{{ section.id }} .rc-testimonials__heading {
+    margin: 0;
+    font-family: var(--rc-heading-family);
+    font-weight: var(--rc-heading-weight);
+    font-style: var(--rc-heading-style);
+    font-size: clamp(24px, 2.22vw, 32px);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    color: var(--rc-heading-color, #222222);
+  }
+
+  .section-rc-testimonials-{{ section.id }} .rc-testimonials__subheading {
+    margin: 0;
+    font-family: var(--rc-body-family);
+    font-weight: var(--rc-body-weight);
+    font-style: var(--rc-body-style);
+    font-size: clamp(14px, 1.05vw, 18px);
+    line-height: 1.5;
+    color: var(--rc-text-color, #222222);
+    opacity: 0.8;
+  }
+
+  .section-rc-testimonials-{{ section.id }} .rc-testimonials__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    width: 100%;
+  }
+
+  .section-rc-testimonials-{{ section.id }} .rc-testimonials__card {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    text-align: center;
+    padding: 36px 28px;
+    background-color: var(--rc-card-bg, transparent);
+    border-radius: 12px;
+  }
+
+  .section-rc-testimonials-{{ section.id }} .rc-testimonials__stars {
+    display: inline-flex;
+    gap: 4px;
+    color: var(--rc-star-color, #EED427);
+  }
+
+  .section-rc-testimonials-{{ section.id }} .rc-testimonials__star--empty {
+    color: rgba(34, 34, 34, 0.25);
+  }
+
+  .section-rc-testimonials-{{ section.id }} .rc-testimonials__quote {
+    margin: 0;
+    font-family: var(--rc-body-family);
+    font-weight: var(--rc-body-weight);
+    font-style: var(--rc-body-style);
+    font-size: clamp(14px, 1.05vw, 18px);
+    line-height: 1.6;
+    color: var(--rc-text-color, #222222);
+  }
+
+  .section-rc-testimonials-{{ section.id }} .rc-testimonials__person {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    margin-top: auto;
+  }
+
+  .section-rc-testimonials-{{ section.id }} .rc-testimonials__avatar {
+    display: block;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #E3E7EE;
+  }
+
+  .section-rc-testimonials-{{ section.id }} .rc-testimonials__avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .section-rc-testimonials-{{ section.id }} .rc-testimonials__name {
+    font-family: var(--rc-name-family);
+    font-weight: var(--rc-name-weight);
+    font-style: var(--rc-name-style);
+    font-size: 18px;
+    line-height: 1.2;
+    color: var(--rc-text-color, #222222);
+  }
+
+  .section-rc-testimonials-{{ section.id }} .rc-testimonials__cta-wrap {
+    display: flex;
+    justify-content: center;
+  }
+
+  .section-rc-testimonials-{{ section.id }} .rc-testimonials__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 193px;
+    padding: 18px 32px;
+    background-color: var(--rc-cta-bg, #1A4083);
+    color: var(--rc-cta-text, #FFFFFF);
+    border-radius: 4px;
+    text-decoration: none;
+    font-family: var(--rc-cta-family);
+    font-weight: var(--rc-cta-weight);
+    font-style: var(--rc-cta-style);
+    font-size: 16px;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: filter 0.2s ease, transform 0.2s ease;
+  }
+
+  .section-rc-testimonials-{{ section.id }} .rc-testimonials__cta:hover,
+  .section-rc-testimonials-{{ section.id }} .rc-testimonials__cta:focus-visible {
+    filter: brightness(1.12);
+    transform: translateY(-1px);
+    outline: none;
+  }
+
+  @media screen and (max-width: 989px) {
+    .section-rc-testimonials-{{ section.id }} .rc-testimonials__grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .section-rc-testimonials-{{ section.id }} .rc-testimonials__inner {
+      gap: 32px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .section-rc-testimonials-{{ section.id }} .rc-testimonials__card {
+      padding: 28px 20px;
+    }
+    .section-rc-testimonials-{{ section.id }} .rc-testimonials__avatar {
+      width: 72px;
+      height: 72px;
+    }
+    .section-rc-testimonials-{{ section.id }} .rc-testimonials__cta {
+      width: 100%;
+      padding: 14px 20px;
+      font-size: 14px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section-rc-testimonials-{{ section.id }} .rc-testimonials__cta {
+      transition: none;
+    }
+    .section-rc-testimonials-{{ section.id }} .rc-testimonials__cta:hover {
+      transform: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Testimonials (rc)",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "max_blocks": 9,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "TRUSTED BY MILLIONS OF ATHLETES WORLDWIDE"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "From everyday lifters to elite professionals RCSS fuels those who refuse to quit."
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "helvetica_n7"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body font",
+      "default": "barlow_n4"
+    },
+    {
+      "type": "font_picker",
+      "id": "name_font",
+      "label": "Name font",
+      "default": "barlow_n7"
+    },
+    {
+      "type": "font_picker",
+      "id": "cta_font",
+      "label": "Button font",
+      "default": "helvetica_n7"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Section background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#F6F8FB"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#222222"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Body text",
+      "default": "#222222"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star color",
+      "default": "#EED427"
+    },
+    {
+      "type": "color",
+      "id": "cta_background",
+      "label": "Button background",
+      "default": "#1A4083"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "Button text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Star rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "richtext",
+          "id": "quote",
+          "label": "Quote",
+          "default": "<p>This pre-workout is the real deal. I feel locked in and ready to crush every session.</p>"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Reviewer name",
+          "default": "Vinny S."
+        },
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "Avatar image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials (rc)",
+      "category": "Text",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "name": "Vinny S.",
+            "quote": "<p>This pre-workout is the real deal. I feel locked in and ready to crush every session.</p>"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "name": "Teri U.",
+            "quote": "<p>My recovery time has never been faster. The quality is unmatched.</p>"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "name": "Joe I.",
+            "quote": "<p>Ronnie's products gave me the edge I needed. Lightweight, baby!</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

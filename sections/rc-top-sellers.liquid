@@ -1,0 +1,445 @@
+{%- liquid
+  assign heading_text = section.settings.heading
+  assign heading_font = section.settings.heading_font
+  assign eyebrow_font = section.settings.eyebrow_font
+  assign title_font = section.settings.title_font
+  assign price_font = section.settings.price_font
+-%}
+
+{%- style -%}
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ eyebrow_font | font_face: font_display: 'swap' }}
+  {{ title_font | font_face: font_display: 'swap' }}
+  {{ price_font | font_face: font_display: 'swap' }}
+
+  .section-rc-top-sellers-{{ section.id }} {
+    --rc-heading-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --rc-heading-weight: {{ heading_font.weight }};
+    --rc-heading-style: {{ heading_font.style }};
+    --rc-eyebrow-family: {{ eyebrow_font.family }}, {{ eyebrow_font.fallback_families }};
+    --rc-eyebrow-weight: {{ eyebrow_font.weight }};
+    --rc-eyebrow-style: {{ eyebrow_font.style }};
+    --rc-title-family: {{ title_font.family }}, {{ title_font.fallback_families }};
+    --rc-title-weight: {{ title_font.weight }};
+    --rc-title-style: {{ title_font.style }};
+    --rc-price-family: {{ price_font.family }}, {{ price_font.fallback_families }};
+    --rc-price-weight: {{ price_font.weight }};
+    --rc-price-style: {{ price_font.style }};
+    --rc-bg: {{ section.settings.background_color }};
+    --rc-heading-color: {{ section.settings.heading_color }};
+    --rc-card-bg: {{ section.settings.card_background }};
+    --rc-text-color: {{ section.settings.text_color }};
+    --rc-glow-color: {{ section.settings.glow_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+<section class="section-rc-top-sellers-{{ section.id }} rc-top-sellers">
+  <div class="page-width rc-top-sellers__inner">
+    {%- if heading_text != blank -%}
+      <h2 class="rc-top-sellers__heading">{{ heading_text | escape }}</h2>
+    {%- endif -%}
+
+    <div class="rc-top-sellers__grid">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign card_link = block.settings.link | default: '#'
+          assign card_image = block.settings.image
+          assign card_eyebrow = block.settings.eyebrow
+          assign card_title = block.settings.title
+          assign card_price = block.settings.price_label
+        -%}
+        <a href="{{ card_link }}" class="rc-top-sellers__card" {{ block.shopify_attributes }}>
+          <div class="rc-top-sellers__media">
+            <span class="rc-top-sellers__glow" aria-hidden="true"></span>
+            {%- if card_image != blank -%}
+              {{ card_image | image_url: width: 800 | image_tag:
+                loading: 'lazy',
+                widths: '200,300,400,600,800',
+                sizes: '(min-width: 990px) 25vw, (min-width: 750px) 50vw, 100vw',
+                alt: card_title,
+                class: 'rc-top-sellers__image'
+              }}
+            {%- endif -%}
+          </div>
+          <div class="rc-top-sellers__body">
+            {%- if card_eyebrow != blank -%}
+              <p class="rc-top-sellers__eyebrow">{{ card_eyebrow | escape }}</p>
+            {%- endif -%}
+            <div class="rc-top-sellers__meta">
+              {%- if card_title != blank -%}
+                <h3 class="rc-top-sellers__title">{{ card_title | escape }}</h3>
+              {%- endif -%}
+              {%- if card_price != blank -%}
+                <span class="rc-top-sellers__price">{{ card_price | escape }}</span>
+              {%- endif -%}
+            </div>
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .section-rc-top-sellers-{{ section.id }} {
+    display: block;
+    width: 100%;
+    background-color: var(--rc-bg, #FFFFFF);
+  }
+
+  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__heading {
+    margin: 0;
+    padding: 0;
+    font-family: var(--rc-heading-family);
+    font-weight: var(--rc-heading-weight);
+    font-style: var(--rc-heading-style);
+    font-size: clamp(24px, 2.22vw, 32px);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    color: var(--rc-heading-color, #222222);
+    text-align: left;
+  }
+
+  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__card {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--rc-card-bg, #F6F8FB);
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    aspect-ratio: 428 / 480;
+  }
+
+  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__card:hover,
+  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__card:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+    outline: none;
+  }
+
+  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__media {
+    position: relative;
+    flex: 1 1 auto;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 70%;
+    height: 70%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(closest-side, var(--rc-glow-color, rgba(26, 64, 131, 0.45)) 0%, rgba(26, 64, 131, 0) 75%);
+    filter: blur(24px);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__image {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 80%;
+    height: 80%;
+    margin: 10% auto 0;
+    object-fit: contain;
+    mix-blend-mode: normal;
+    transition: transform 0.4s ease;
+  }
+
+  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__card:hover .rc-top-sellers__image {
+    transform: scale(1.04);
+  }
+
+  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px 24px 28px;
+  }
+
+  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__eyebrow {
+    margin: 0;
+    font-family: var(--rc-eyebrow-family);
+    font-weight: var(--rc-eyebrow-weight);
+    font-style: var(--rc-eyebrow-style);
+    font-size: 14px;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    color: var(--rc-text-color, #222222);
+    opacity: 0.8;
+  }
+
+  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__title {
+    margin: 0;
+    flex: 1 1 auto;
+    font-family: var(--rc-title-family);
+    font-weight: var(--rc-title-weight);
+    font-style: var(--rc-title-style);
+    font-size: 18px;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    color: var(--rc-text-color, #222222);
+  }
+
+  .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__price {
+    flex: 0 0 auto;
+    font-family: var(--rc-price-family);
+    font-weight: var(--rc-price-weight);
+    font-style: var(--rc-price-style);
+    font-size: 18px;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--rc-text-color, #222222);
+    white-space: nowrap;
+  }
+
+  @media screen and (max-width: 989px) {
+    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__inner {
+      gap: 24px;
+    }
+
+    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__body {
+      padding: 14px 16px 20px;
+    }
+
+    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__title,
+    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__price {
+      font-size: 15px;
+    }
+
+    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__eyebrow {
+      font-size: 12px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__card,
+    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__image {
+      transition: none;
+    }
+    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__card:hover,
+    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__card:focus-visible {
+      transform: none;
+    }
+    .section-rc-top-sellers-{{ section.id }} .rc-top-sellers__card:hover .rc-top-sellers__image {
+      transform: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Top sellers (rc)",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "TOP SELLERS"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "helvetica_n7"
+    },
+    {
+      "type": "font_picker",
+      "id": "eyebrow_font",
+      "label": "Eyebrow font",
+      "default": "barlow_n4"
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Product title font",
+      "default": "barlow_n7"
+    },
+    {
+      "type": "font_picker",
+      "id": "price_font",
+      "label": "Price font",
+      "default": "barlow_n7"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Section background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#222222"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#F6F8FB"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Card text",
+      "default": "#222222"
+    },
+    {
+      "type": "color",
+      "id": "glow_color",
+      "label": "Card glow",
+      "default": "#1A4083"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Product image"
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Eyebrow",
+          "default": "Ronnie Coleman Signature Series"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Product title",
+          "default": "YEAH BUDDY™ Pre-Workout Powder"
+        },
+        {
+          "type": "text",
+          "id": "price_label",
+          "label": "Price label",
+          "default": "From $34.99"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Product link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Top sellers (rc)",
+      "category": "Product",
+      "blocks": [
+        {
+          "type": "product",
+          "settings": {
+            "eyebrow": "Ronnie Coleman Signature Series",
+            "title": "YEAH BUDDY™ Pre-Workout Powder",
+            "price_label": "From $34.99"
+          }
+        },
+        {
+          "type": "product",
+          "settings": {
+            "eyebrow": "Ronnie Coleman Signature Series",
+            "title": "Yeah Buddy Sport Pre-Workout",
+            "price_label": "From $26.99"
+          }
+        },
+        {
+          "type": "product",
+          "settings": {
+            "eyebrow": "Ronnie Coleman Signature Series",
+            "title": "L-Carnitine XS Liquid 3,000MG",
+            "price_label": "From $34.99"
+          }
+        },
+        {
+          "type": "product",
+          "settings": {
+            "eyebrow": "Ronnie Coleman Signature Series",
+            "title": "Creatine XS Unflavoured Powder",
+            "price_label": "From $49.99"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

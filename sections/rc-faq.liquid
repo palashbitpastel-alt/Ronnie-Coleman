@@ -1,0 +1,404 @@
+{%- liquid
+  assign heading_text = section.settings.heading
+
+  assign heading_font = section.settings.heading_font
+  assign question_font = section.settings.question_font
+  assign answer_font = section.settings.answer_font
+-%}
+
+{%- style -%}
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ question_font | font_face: font_display: 'swap' }}
+  {{ answer_font | font_face: font_display: 'swap' }}
+
+  .section-rc-faq-{{ section.id }} {
+    --rc-heading-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --rc-heading-weight: {{ heading_font.weight }};
+    --rc-heading-style: {{ heading_font.style }};
+    --rc-question-family: {{ question_font.family }}, {{ question_font.fallback_families }};
+    --rc-question-weight: {{ question_font.weight }};
+    --rc-question-style: {{ question_font.style }};
+    --rc-answer-family: {{ answer_font.family }}, {{ answer_font.fallback_families }};
+    --rc-answer-weight: {{ answer_font.weight }};
+    --rc-answer-style: {{ answer_font.style }};
+    --rc-bg: {{ section.settings.background_color }};
+    --rc-heading-color: {{ section.settings.heading_color }};
+    --rc-question-color: {{ section.settings.question_color }};
+    --rc-answer-color: {{ section.settings.answer_color }};
+    --rc-border-color: {{ section.settings.border_color }};
+    --rc-icon-color: {{ section.settings.icon_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+<section class="section-rc-faq-{{ section.id }} rc-faq">
+  <div class="page-width rc-faq__inner">
+    {%- if heading_text != blank -%}
+      <h2 class="rc-faq__heading">{{ heading_text | escape }}</h2>
+    {%- endif -%}
+
+    <ul class="rc-faq__list" role="list">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign question = block.settings.question
+          assign answer = block.settings.answer
+          assign is_open = block.settings.default_open
+        -%}
+        <li class="rc-faq__item" {{ block.shopify_attributes }}>
+          <details class="rc-faq__details"{% if is_open %} open{% endif %}>
+            <summary class="rc-faq__summary">
+              <span class="rc-faq__question">{{ question | escape }}</span>
+              <span class="rc-faq__icon" aria-hidden="true">
+                <svg class="rc-faq__icon-svg rc-faq__icon-svg--plus" viewBox="0 0 24 24" width="24" height="24" focusable="false">
+                  <path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <svg class="rc-faq__icon-svg rc-faq__icon-svg--minus" viewBox="0 0 24 24" width="24" height="24" focusable="false">
+                  <path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </span>
+            </summary>
+            <div class="rc-faq__answer">{{ answer }}</div>
+          </details>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% stylesheet %}
+  .section-rc-faq-{{ section.id }} {
+    display: block;
+    width: 100%;
+    background-color: var(--rc-bg, #0C0D16);
+  }
+
+  .section-rc-faq-{{ section.id }} .rc-faq__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .section-rc-faq-{{ section.id }} .rc-faq__heading {
+    margin: 0;
+    font-family: var(--rc-heading-family);
+    font-weight: var(--rc-heading-weight);
+    font-style: var(--rc-heading-style);
+    font-size: clamp(24px, 2.22vw, 32px);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    color: var(--rc-heading-color, #FFFFFF);
+    text-align: center;
+  }
+
+  .section-rc-faq-{{ section.id }} .rc-faq__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 1095px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .section-rc-faq-{{ section.id }} .rc-faq__item {
+    border-bottom: 1px solid var(--rc-border-color, rgba(255, 255, 255, 0.15));
+  }
+
+  .section-rc-faq-{{ section.id }} .rc-faq__item:first-child {
+    border-top: 1px solid var(--rc-border-color, rgba(255, 255, 255, 0.15));
+  }
+
+  .section-rc-faq-{{ section.id }} .rc-faq__details {
+    width: 100%;
+  }
+
+  .section-rc-faq-{{ section.id }} .rc-faq__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 24px 4px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    transition: color 0.2s ease;
+  }
+
+  .section-rc-faq-{{ section.id }} .rc-faq__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .section-rc-faq-{{ section.id }} .rc-faq__summary:focus-visible {
+    outline: 2px solid var(--rc-icon-color, #1A4083);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+
+  .section-rc-faq-{{ section.id }} .rc-faq__question {
+    flex: 1 1 auto;
+    font-family: var(--rc-question-family);
+    font-weight: var(--rc-question-weight);
+    font-style: var(--rc-question-style);
+    font-size: clamp(16px, 1.4vw, 24px);
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: var(--rc-question-color, #FFFFFF);
+  }
+
+  .section-rc-faq-{{ section.id }} .rc-faq__icon {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: var(--rc-icon-color, #FFFFFF);
+    background-color: transparent;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  .section-rc-faq-{{ section.id }} .rc-faq__icon-svg {
+    display: block;
+  }
+
+  .section-rc-faq-{{ section.id }} .rc-faq__icon-svg--minus {
+    display: none;
+  }
+
+  .section-rc-faq-{{ section.id }} .rc-faq__details[open] .rc-faq__icon-svg--plus {
+    display: none;
+  }
+
+  .section-rc-faq-{{ section.id }} .rc-faq__details[open] .rc-faq__icon-svg--minus {
+    display: block;
+  }
+
+  .section-rc-faq-{{ section.id }} .rc-faq__details[open] .rc-faq__icon {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .section-rc-faq-{{ section.id }} .rc-faq__answer {
+    padding: 0 4px 28px;
+    max-width: 920px;
+    font-family: var(--rc-answer-family);
+    font-weight: var(--rc-answer-weight);
+    font-style: var(--rc-answer-style);
+    font-size: clamp(14px, 1.05vw, 18px);
+    line-height: 1.6;
+    color: var(--rc-answer-color, #FFFFFF);
+    opacity: 0.85;
+  }
+
+  .section-rc-faq-{{ section.id }} .rc-faq__answer p {
+    margin: 0 0 0.75em 0;
+  }
+
+  .section-rc-faq-{{ section.id }} .rc-faq__answer p:last-child {
+    margin-bottom: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .section-rc-faq-{{ section.id }} .rc-faq__summary {
+      padding: 20px 4px;
+      gap: 16px;
+    }
+    .section-rc-faq-{{ section.id }} .rc-faq__icon {
+      width: 28px;
+      height: 28px;
+    }
+    .section-rc-faq-{{ section.id }} .rc-faq__icon-svg {
+      width: 20px;
+      height: 20px;
+    }
+    .section-rc-faq-{{ section.id }} .rc-faq__answer {
+      padding-bottom: 20px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section-rc-faq-{{ section.id }} .rc-faq__icon,
+    .section-rc-faq-{{ section.id }} .rc-faq__summary {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAQ (rc)",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "max_blocks": 15,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "FAQ"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "helvetica_n7"
+    },
+    {
+      "type": "font_picker",
+      "id": "question_font",
+      "label": "Question font",
+      "default": "barlow_n7"
+    },
+    {
+      "type": "font_picker",
+      "id": "answer_font",
+      "label": "Answer font",
+      "default": "barlow_n4"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Section background",
+      "default": "#0C0D16"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "question_color",
+      "label": "Question color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "answer_color",
+      "label": "Answer color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Divider color",
+      "default": "#303140"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "FAQ item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "How fast will my order ship?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Most orders ship within 24–48 hours. You'll receive tracking info by email as soon as your package leaves our warehouse.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "default_open",
+          "label": "Open by default",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ (rc)",
+      "category": "Text",
+      "blocks": [
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "How fast will my order ship?",
+            "answer": "<p>Most orders ship within 24–48 hours. You'll receive tracking info by email as soon as your package leaves our warehouse.</p>",
+            "default_open": true
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "What if I don't like the product?",
+            "answer": "<p>We stand behind every product. Reach out within 30 days of purchase for a refund or replacement — no questions asked.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Are your supplements safe?",
+            "answer": "<p>Yes. Every Ronnie Coleman Signature Series formula is manufactured in GMP-certified facilities and third-party tested for purity and potency.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you ship internationally?",
+            "answer": "<p>We ship to most countries worldwide. Shipping options and rates are calculated at checkout based on your destination.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Can I get support if I have product questions?",
+            "answer": "<p>Absolutely. Our support team is available via email and chat — we're happy to help with product selection, stacking advice, or order issues.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
