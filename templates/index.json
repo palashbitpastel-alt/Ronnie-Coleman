@@ -206,6 +206,12 @@
     "rc_shop_by_category_MbAkaV": {
       "type": "rc-shop-by-category",
       "blocks": {
+        "featured_collection_CRfkdY": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "charm-dangles"
+          }
+        },
         "featured_collection_nMKJ3a": {
           "type": "featured_collection",
           "settings": {
@@ -232,6 +238,7 @@
         }
       },
       "block_order": [
+        "featured_collection_CRfkdY",
         "featured_collection_nMKJ3a",
         "featured_collection_mXfaRT",
         "featured_collection_LzyLJH",
