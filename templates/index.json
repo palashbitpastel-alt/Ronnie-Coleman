@@ -138,6 +138,10 @@
       "settings": {
         "image": "shopify://shop_images/82a6e7809f81f0bd004d4c3235175f7e111a9a3d.png",
         "alt_text": "Ronnie Coleman hero banner",
+        "heading_font": "barlow_n7",
+        "body_font": "barlow_n4",
+        "eyebrow_font": "barlow_n4",
+        "cta_font": "barlow_n7",
         "eyebrow": "Trusted by Millions of Athletes Worldwide.",
         "heading": "BUILT TO INSPIRE. MADE TO PERFORM.",
         "subheading": "<p>Scientifically formulated supplements designed by 8× Mr. Olympia Ronnie Coleman to help you build muscle, recover faster, and dominate every workout.</p>",
@@ -221,6 +225,92 @@
         "padding_top": 12,
         "padding_bottom": 0
       }
+    },
+    "rc_collection_all_DXCVKD": {
+      "type": "rc-collection-all",
+      "blocks": {
+        "category_qikBTb": {
+          "type": "category",
+          "settings": {
+            "overline": "",
+            "heading": "SHOP BY GOALS",
+            "cta_label": "SHOP NOW",
+            "link": ""
+          }
+        },
+        "category_PPd6ww": {
+          "type": "category",
+          "settings": {
+            "overline": "",
+            "heading": "SUPPLEMENTS",
+            "cta_label": "SHOP NOW",
+            "link": ""
+          }
+        },
+        "category_MPUizQ": {
+          "type": "category",
+          "settings": {
+            "overline": "",
+            "heading": "BUNDLES",
+            "cta_label": "SHOP NOW",
+            "link": ""
+          }
+        },
+        "category_8Cnx6n": {
+          "type": "category",
+          "settings": {
+            "overline": "",
+            "heading": "APPAREL",
+            "cta_label": "SHOP NOW",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "category_qikBTb",
+        "category_PPd6ww",
+        "category_MPUizQ",
+        "category_8Cnx6n"
+      ],
+      "disabled": true,
+      "name": "Collection all (rc)",
+      "settings": {
+        "title": "",
+        "view_all_label": "",
+        "view_all_link": "",
+        "heading_font": "barlow_n7",
+        "tile_heading_font": "barlow_n7",
+        "cta_font": "barlow_n7",
+        "columns_desktop": 4,
+        "columns_mobile": 2,
+        "tile_aspect": "4:5",
+        "tile_gap": 24,
+        "tile_radius": 10,
+        "overlay_opacity": 55
+      }
+    },
+    "rc_featured_collection_CBjyjq": {
+      "type": "rc-featured-collection",
+      "disabled": true,
+      "name": "Featured collection (rc)",
+      "settings": {
+        "title": "TOP SELLERS",
+        "collection": "for-slider",
+        "products_to_show": 8,
+        "columns_desktop": 4,
+        "columns_mobile": 2,
+        "enable_slider": true,
+        "card_radius": 8,
+        "card_bg": "#f5f5f5",
+        "show_vendor": true,
+        "show_price": true,
+        "show_swatches": true,
+        "view_all_label": "",
+        "view_all_link": "",
+        "heading_font": "barlow_n7",
+        "body_font": "barlow_n4",
+        "cta_font": "barlow_n7"
+      }
     }
   },
   "order": [
@@ -229,6 +319,8 @@
     "slideshow_n79Hbg",
     "rc_hero_banner_cFXpmB",
     "collection_list_DYjzJf",
-    "featured_collection_LKYr86"
+    "featured_collection_LKYr86",
+    "rc_collection_all_DXCVKD",
+    "rc_featured_collection_CBjyjq"
   ]
 }
