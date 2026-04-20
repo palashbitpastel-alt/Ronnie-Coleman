@@ -1,3 +1,18 @@
+{%- liquid
+  assign is_home = false
+  if template.name == 'index'
+    assign is_home = true
+  endif
+  assign transparent_on_top_active = false
+  if section.settings.transparent_on_top and is_home
+    assign transparent_on_top_active = true
+  endif
+  assign enable_transparent_header_active = false
+  if section.settings.enable_transparent_header and is_home
+    assign enable_transparent_header_active = true
+  endif
+-%}
+
 <link rel="stylesheet" href="{{ 'component-list-menu.css' | asset_url }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ 'component-search.css' | asset_url }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ 'component-menu-drawer.css' | asset_url }}" media="print" onload="this.media='all'">
@@ -88,7 +103,7 @@
     }
   }
 
-  {%- if section.settings.transparent_on_top -%}
+  {%- if transparent_on_top_active -%}
     .shopify-section-header-transparent {
       position: absolute;
       top: 0;
@@ -147,7 +162,7 @@
     }
   }
 
-  {%- if section.settings.enable_transparent_header -%}
+  {%- if enable_transparent_header_active -%}
     /* Transparent overlay — initial state (over hero) */
     .section-header {
       position: absolute;
@@ -244,7 +259,7 @@
   endfor
 -%}
 
-<{% if section.settings.sticky_header_type != 'none' %}sticky-header data-sticky-type="{{ section.settings.sticky_header_type }}"{% else %}div{% endif %} class="header-wrapper color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}{% if section.settings.transparent_on_top %} header-wrapper--rc-transparent{% endif %}">
+<{% if section.settings.sticky_header_type != 'none' %}sticky-header data-sticky-type="{{ section.settings.sticky_header_type }}"{% else %}div{% endif %} class="header-wrapper color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}{% if transparent_on_top_active %} header-wrapper--rc-transparent{% endif %}">
   {%- liquid
     assign social_links = false
     assign localization_forms = false
@@ -424,7 +439,7 @@
   {%- render 'cart-notification', color_scheme: section.settings.color_scheme, desktop_menu_type: section.settings.menu_type_desktop -%}
 {%- endif -%}
 
-{%- if section.settings.transparent_on_top -%}
+{%- if transparent_on_top_active -%}
   <script>
     (function () {
       var section = document.querySelector('.shopify-section-header');

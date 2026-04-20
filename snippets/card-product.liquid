@@ -226,12 +226,15 @@
                   {%- for value in color_option.values limit: 6 -%}
                     {%- liquid
                       assign matching_variant = value.variant
-                      assign swatch_bg = 'transparent'
+                      assign swatch_bg = ''
                       if value.swatch.color
                         assign swatch_bg = 'rgb(' | append: value.swatch.color.rgb | append: ')'
                       elsif value.swatch.image
                         assign swatch_img_url = value.swatch.image | image_url: width: 50
                         assign swatch_bg = 'url(' | append: swatch_img_url | append: ') center/cover no-repeat'
+                      else
+                        assign name_color = value.name | downcase | strip | replace: ' ', '' | replace: '-', '' | replace: "'", ''
+                        assign swatch_bg = name_color
                       endif
                       assign variant_image_url = ''
                       if matching_variant.featured_image

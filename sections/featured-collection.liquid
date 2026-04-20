@@ -116,6 +116,22 @@
       content: none;
     }
   }
+
+  /* Kill Dawn's "whole card clickable" overlay so color swatches receive clicks */
+  #collection-{{ section.id }} .card__heading a::after,
+  #collection-{{ section.id }} .card__heading a:after {
+    content: none !important;
+  }
+
+  #collection-{{ section.id }} .card__swatches {
+    position: relative;
+    z-index: 2;
+  }
+
+  #collection-{{ section.id }} .card__swatch {
+    position: relative;
+    z-index: 2;
+  }
 {%- endstyle -%}
 
 {%- liquid
