@@ -190,6 +190,55 @@
         "cta_label": "SHOP NOW",
         "cta_link": ""
       }
+    },
+    "rc_shop_by_category_MbAkaV": {
+      "type": "rc-shop-by-category",
+      "blocks": {
+        "category_bMxGgQ": {
+          "type": "category",
+          "settings": {
+            "title": "SUPPLEMENTS",
+            "cta_label": "Shop Now",
+            "link": ""
+          }
+        },
+        "category_6Je6Ax": {
+          "type": "category",
+          "settings": {
+            "title": "BUNDLES",
+            "cta_label": "Shop Now",
+            "link": ""
+          }
+        },
+        "category_L764Fy": {
+          "type": "category",
+          "settings": {
+            "title": "APPAREL",
+            "cta_label": "Shop Now",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "category_bMxGgQ",
+        "category_6Je6Ax",
+        "category_L764Fy"
+      ],
+      "name": "Shop by category (rc)",
+      "settings": {
+        "heading": "SHOP BY CATEGORY",
+        "heading_font": "sans_serif_n7",
+        "title_font": "sans_serif_n7",
+        "cta_font": "sans_serif_n7",
+        "background_color": "#FFFFFF",
+        "heading_color": "#222222",
+        "tile_text_color": "#FFFFFF",
+        "tile_overlay_color": "#000000",
+        "cta_background": "#1A4083",
+        "cta_text_color": "#FFFFFF",
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
     }
   },
   "order": [
@@ -198,6 +247,7 @@
     "slideshow_n79Hbg",
     "rc_hero_banner_cFXpmB",
     "rc_featured_collection_CBjyjq",
-    "rc_hero_banner_BGfjaB"
+    "rc_hero_banner_BGfjaB",
+    "rc_shop_by_category_MbAkaV"
   ]
 }
