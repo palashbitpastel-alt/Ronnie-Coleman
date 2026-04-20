@@ -203,10 +203,40 @@
             "custom_link": "",
             "cta_label": "Shop Now"
           }
+        },
+        "collection_6Dz3Hi": {
+          "type": "collection",
+          "settings": {
+            "collection": "",
+            "custom_title": "",
+            "custom_link": "",
+            "cta_label": "Shop Now"
+          }
+        },
+        "collection_9dwf7H": {
+          "type": "collection",
+          "settings": {
+            "collection": "",
+            "custom_title": "",
+            "custom_link": "",
+            "cta_label": "Shop Now"
+          }
+        },
+        "collection_6eL6wQ": {
+          "type": "collection",
+          "settings": {
+            "collection": "",
+            "custom_title": "",
+            "custom_link": "",
+            "cta_label": "Shop Now"
+          }
         }
       },
       "block_order": [
-        "collection_fBkBk7"
+        "collection_fBkBk7",
+        "collection_6Dz3Hi",
+        "collection_9dwf7H",
+        "collection_6eL6wQ"
       ],
       "name": "Shop by category (rc)",
       "settings": {
@@ -232,6 +262,74 @@
         "padding_top": 60,
         "padding_bottom": 60
       }
+    },
+    "rc_top_sellers_3EJRWm": {
+      "type": "rc-top-sellers",
+      "blocks": {
+        "product_YayiGd": {
+          "type": "product",
+          "settings": {
+            "eyebrow": "Ronnie Coleman Signature Series",
+            "title": "YEAH BUDDY™ Pre-Workout Powder",
+            "price_label": "From $34.99",
+            "link": ""
+          }
+        },
+        "product_7ibdcM": {
+          "type": "product",
+          "settings": {
+            "eyebrow": "Ronnie Coleman Signature Series",
+            "title": "Yeah Buddy Sport Pre-Workout",
+            "price_label": "From $26.99",
+            "link": ""
+          }
+        },
+        "product_Amh7yj": {
+          "type": "product",
+          "settings": {
+            "eyebrow": "Ronnie Coleman Signature Series",
+            "title": "L-Carnitine XS Liquid 3,000MG",
+            "price_label": "From $34.99",
+            "link": ""
+          }
+        },
+        "product_y8tBhF": {
+          "type": "product",
+          "settings": {
+            "eyebrow": "Ronnie Coleman Signature Series",
+            "title": "Creatine XS Unflavoured Powder",
+            "price_label": "From $49.99",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "product_YayiGd",
+        "product_7ibdcM",
+        "product_Amh7yj",
+        "product_y8tBhF"
+      ],
+      "name": "Top sellers (rc)",
+      "settings": {
+        "heading": "TOP SELLERS",
+        "heading_alignment": "left",
+        "columns_desktop": 4,
+        "columns_tablet": "2",
+        "columns_mobile": "1",
+        "image_ratio": "adapt",
+        "card_radius": 8,
+        "heading_font": "sans_serif_n7",
+        "eyebrow_font": "barlow_n4",
+        "title_font": "barlow_n7",
+        "price_font": "barlow_n7",
+        "background_color": "#FFFFFF",
+        "heading_color": "#222222",
+        "card_background": "#F6F8FB",
+        "text_color": "#222222",
+        "glow_color": "#1A4083",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
     }
   },
   "order": [
@@ -241,6 +339,7 @@
     "rc_hero_banner_cFXpmB",
     "rc_featured_collection_CBjyjq",
     "rc_hero_banner_BGfjaB",
-    "rc_shop_by_category_MbAkaV"
+    "rc_shop_by_category_MbAkaV",
+    "rc_top_sellers_3EJRWm"
   ]
 }
