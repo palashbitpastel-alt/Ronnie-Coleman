@@ -88,6 +88,58 @@
     }
   }
 
+  {%- if section.settings.transparent_on_top -%}
+    .shopify-section-header-transparent {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 4;
+      margin-bottom: 0 !important;
+    }
+
+    .shopify-section-header-transparent + * {
+      margin-top: 0 !important;
+    }
+
+    .shopify-section-header-transparent .header-wrapper--rc-transparent {
+      background: transparent !important;
+      background-color: transparent !important;
+      border-bottom-color: transparent !important;
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .shopify-section-header-transparent .header-wrapper--rc-transparent,
+    .shopify-section-header-transparent .header-wrapper--rc-transparent .header__heading-link,
+    .shopify-section-header-transparent .header-wrapper--rc-transparent .header__menu-item,
+    .shopify-section-header-transparent .header-wrapper--rc-transparent .header__active-menu-item,
+    .shopify-section-header-transparent .header-wrapper--rc-transparent .header__icon,
+    .shopify-section-header-transparent .header-wrapper--rc-transparent .header__icon svg,
+    .shopify-section-header-transparent .header-wrapper--rc-transparent .list-menu__item,
+    .shopify-section-header-transparent .header-wrapper--rc-transparent summary.header__icon {
+      color: #ffffff !important;
+      fill: currentColor;
+    }
+
+    .shopify-section-header-transparent .header-wrapper--rc-transparent .header__heading-logo,
+    .shopify-section-header-transparent .header-wrapper--rc-transparent .header__heading-logo-wrapper img {
+      filter: brightness(0) invert(1);
+    }
+
+    .shopify-section-header-transparent.rc-header-is-scrolled .header-wrapper--rc-transparent {
+      background-color: var(--rc-header-scrolled-bg, rgba(12, 13, 22, 0.92)) !important;
+      backdrop-filter: saturate(140%) blur(10px);
+      -webkit-backdrop-filter: saturate(140%) blur(10px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .shopify-section-header-transparent .header-wrapper--rc-transparent {
+        transition: none;
+      }
+    }
+  {%- endif -%}
+
   @media screen and (min-width: 990px) {
     .header {
       padding-top: {{ section.settings.padding_top }}px;
@@ -192,7 +244,7 @@
   endfor
 -%}
 
-<{% if section.settings.sticky_header_type != 'none' %}sticky-header data-sticky-type="{{ section.settings.sticky_header_type }}"{% else %}div{% endif %} class="header-wrapper color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}">
+<{% if section.settings.sticky_header_type != 'none' %}sticky-header data-sticky-type="{{ section.settings.sticky_header_type }}"{% else %}div{% endif %} class="header-wrapper color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}{% if section.settings.transparent_on_top %} header-wrapper--rc-transparent{% endif %}">
   {%- liquid
     assign social_links = false
     assign localization_forms = false
@@ -370,6 +422,28 @@
 
 {%- if settings.cart_type == "notification" -%}
   {%- render 'cart-notification', color_scheme: section.settings.color_scheme, desktop_menu_type: section.settings.menu_type_desktop -%}
+{%- endif -%}
+
+{%- if section.settings.transparent_on_top -%}
+  <script>
+    (function () {
+      var section = document.querySelector('.shopify-section-header');
+      if (!section) return;
+      section.classList.add('shopify-section-header-transparent');
+      var threshold = 24;
+      var raf = null;
+      function onScroll() {
+        if (raf) return;
+        raf = window.requestAnimationFrame(function () {
+          var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+          section.classList.toggle('rc-header-is-scrolled', y > threshold);
+          raf = null;
+        });
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+  </script>
 {%- endif -%}
 
 {% javascript %}
@@ -605,6 +679,13 @@
       ],
       "default": "on-scroll-up",
       "label": "t:sections.header.settings.sticky_header_type.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_on_top",
+      "label": "Transparent header over hero",
+      "info": "Header is fully transparent while the page is at scroll position 0 (so it overlays a hero banner), and fades into a solid background when the user scrolls down.",
+      "default": true
     },
     {
       "type": "checkbox",
