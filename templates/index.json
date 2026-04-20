@@ -227,7 +227,7 @@
         "tile_text_color": "#ffffff",
         "tile_overlay_color": "#000000",
         "tile_overlay_opacity": 35,
-        "cta_background": "#1a4083",
+        "cta_background": "rgba(0,0,0,0)",
         "cta_text_color": "#ffffff",
         "padding_top": 60,
         "padding_bottom": 60
