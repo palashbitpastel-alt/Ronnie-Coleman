@@ -39,6 +39,28 @@
 <section class="section-rc-fc-{{ section.id }} rc-fc">
   <div class="rc-fc__inner page-width">
     <header class="rc-fc__header">
+      <div class="rc-fc__controls">
+        {%- if enable_slider -%}
+          <div class="rc-fc__nav" data-rc-fc-nav>
+            <button class="rc-fc__nav-btn rc-fc__nav-btn--prev" type="button" aria-label="Previous products" data-rc-fc-prev>
+              <svg viewBox="0 0 32 12" aria-hidden="true" focusable="false">
+                <path d="M31 6H2M7 1L2 6l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+            </button>
+            <button class="rc-fc__nav-btn rc-fc__nav-btn--next" type="button" aria-label="Next products" data-rc-fc-next>
+              <svg viewBox="0 0 32 12" aria-hidden="true" focusable="false">
+                <path d="M1 6h29M25 1l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+            </button>
+          </div>
+        {%- endif -%}
+        {%- if section.settings.view_all_label != blank and section.settings.view_all_link != blank -%}
+          <a class="rc-fc__view-all" href="{{ section.settings.view_all_link }}">
+            <span>{{ section.settings.view_all_label | escape }}</span>
+          </a>
+        {%- endif -%}
+      </div>
+
       <div class="rc-fc__title-wrap">
         <svg class="rc-fc__title-icon" viewBox="0 0 32 20" aria-hidden="true" focusable="false">
           <path d="M1 10h24M19 2l7 8-7 8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
@@ -46,28 +68,6 @@
         </svg>
         {%- if section.settings.title != blank -%}
           <h2 class="rc-fc__title">{{ section.settings.title | escape }}</h2>
-        {%- endif -%}
-      </div>
-
-      <div class="rc-fc__controls">
-        {%- if section.settings.view_all_label != blank and section.settings.view_all_link != blank -%}
-          <a class="rc-fc__view-all" href="{{ section.settings.view_all_link }}">
-            <span>{{ section.settings.view_all_label | escape }}</span>
-          </a>
-        {%- endif -%}
-        {%- if enable_slider -%}
-          <div class="rc-fc__nav" data-rc-fc-nav>
-            <button class="rc-fc__nav-btn rc-fc__nav-btn--prev" type="button" aria-label="Previous products" data-rc-fc-prev>
-              <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-                <path d="M13 4l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-              </svg>
-            </button>
-            <button class="rc-fc__nav-btn rc-fc__nav-btn--next" type="button" aria-label="Next products" data-rc-fc-next>
-              <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-                <path d="M7 4l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-              </svg>
-            </button>
-          </div>
         {%- endif -%}
       </div>
     </header>
@@ -184,8 +184,10 @@
   .section-rc-fc-{{ section.id }} .rc-fc__title-wrap {
     display: inline-flex;
     align-items: center;
+    flex-direction: row-reverse;
     gap: 12px;
     min-width: 0;
+    text-align: right;
   }
 
   .section-rc-fc-{{ section.id }} .rc-fc__title-icon {
@@ -230,33 +232,46 @@
   .section-rc-fc-{{ section.id }} .rc-fc__nav {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 18px;
   }
 
   .section-rc-fc-{{ section.id }} .rc-fc__nav-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    width: auto;
+    height: auto;
+    padding: 4px;
     background: transparent;
-    border: 1.5px solid rgba(12, 13, 22, 0.25);
+    border: 0;
     color: inherit;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+    opacity: 0.72;
+    transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
   }
 
   .section-rc-fc-{{ section.id }} .rc-fc__nav-btn:hover,
   .section-rc-fc-{{ section.id }} .rc-fc__nav-btn:focus-visible {
-    border-color: rgba(12, 13, 22, 0.7);
-    background-color: rgba(12, 13, 22, 0.05);
+    opacity: 1;
+    color: #0C0D16;
     outline: none;
   }
 
+  .section-rc-fc-{{ section.id }} .rc-fc__nav-btn--prev:hover {
+    transform: translateX(-2px);
+  }
+
+  .section-rc-fc-{{ section.id }} .rc-fc__nav-btn--next:hover {
+    transform: translateX(2px);
+  }
+
+  .section-rc-fc-{{ section.id }} .rc-fc__nav-btn:focus-visible {
+    box-shadow: 0 1px 0 0 currentColor;
+  }
+
   .section-rc-fc-{{ section.id }} .rc-fc__nav-btn svg {
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 10px;
   }
 
   .section-rc-fc-{{ section.id }} .rc-fc__viewport {
