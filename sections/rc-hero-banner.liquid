@@ -14,6 +14,25 @@
   assign cta_font = section.settings.cta_font
 -%}
 
+{%- if section.settings.image_height == 'adapt' and section.settings.image != blank -%}
+  {%- style -%}
+    @media screen and (max-width: 749px) {
+      .section-rc-hero-banner-{{ section.id }}.rc-hero-banner--adapt .rc-hero-banner__media::before {
+        padding-bottom: {{ 1 | divided_by: section.settings.image.aspect_ratio | times: 100 }}%;
+        content: '';
+        display: block;
+      }
+    }
+    @media screen and (min-width: 750px) {
+      .section-rc-hero-banner-{{ section.id }}.rc-hero-banner--adapt .rc-hero-banner__media::before {
+        padding-bottom: {{ 1 | divided_by: section.settings.image.aspect_ratio | times: 100 }}%;
+        content: '';
+        display: block;
+      }
+    }
+  {%- endstyle -%}
+{%- endif -%}
+
 {%- style -%}
   {{ heading_font | font_face: font_display: 'swap' }}
   {{ body_font | font_face: font_display: 'swap' }}
@@ -39,11 +58,14 @@
       --rc-hero-shadow: none;
     {%- endif -%}
   }
+  .section-rc-hero-banner-{{ section.id }} .rc-hero-banner__scrim {
+    opacity: {{ section.settings.image_overlay_opacity | divided_by: 100.0 }};
+  }
 {%- endstyle -%}
 
-<section class="section-rc-hero-banner-{{ section.id }} rc-hero-banner">
+<section class="section-rc-hero-banner-{{ section.id }} rc-hero-banner rc-hero-banner--h-{{ section.settings.image_height }} rc-hero-banner--content-position-{{ section.settings.desktop_content_position }} rc-hero-banner--align-{{ section.settings.desktop_content_alignment }} rc-hero-banner--mobile-align-{{ section.settings.mobile_content_alignment }}{% if section.settings.show_text_box == false %} rc-hero-banner--desktop-transparent{% endif %}{% if section.settings.show_text_below %} rc-hero-banner--mobile-bottom{% endif %}{% if section.settings.stack_images_on_mobile and section.settings.image != blank and section.settings.image_2 != blank %} rc-hero-banner--stacked{% endif %}{% if section.settings.image_height == 'adapt' and section.settings.image != blank %} rc-hero-banner--adapt{% endif %}">
   <div class="rc-hero-banner__frame">
-    <div class="rc-hero-banner__media">
+    <div class="rc-hero-banner__media{% if section.settings.image_behavior != 'none' %} animate--{{ section.settings.image_behavior }}{% endif %}">
       {%- if section.settings.image != blank -%}
         {{ section.settings.image | image_url: width: 3840 | image_tag:
           loading: 'eager',
@@ -51,9 +73,21 @@
           widths: '480,768,1024,1440,1920,2560,3200,3840',
           sizes: '(min-width: 750px) 100vw, 100vw',
           alt: alt_text,
-          class: 'rc-hero-banner__image',
+          class: 'rc-hero-banner__image{% if section.settings.image_2 != blank %} rc-hero-banner__image--half{% endif %}',
           width: section.settings.image.width,
           height: section.settings.image.height
+        }}
+      {%- endif -%}
+      {%- if section.settings.image_2 != blank -%}
+        {{ section.settings.image_2 | image_url: width: 3840 | image_tag:
+          loading: 'eager',
+          fetchpriority: 'high',
+          widths: '480,768,1024,1440,1920,2560,3200,3840',
+          sizes: '(min-width: 750px) 50vw, 100vw',
+          alt: alt_text,
+          class: 'rc-hero-banner__image rc-hero-banner__image--half',
+          width: section.settings.image_2.width,
+          height: section.settings.image_2.height
         }}
       {%- endif -%}
 
@@ -63,7 +97,7 @@
 
     <div class="rc-hero-banner__scrim" aria-hidden="true"></div>
     <div class="page-width rc-hero-banner__wrapper">
-    <div class="rc-hero-banner__content">
+    <div class="rc-hero-banner__content color-{{ section.settings.color_scheme }} gradient">
       <div class="rc-hero-banner__text">
         {%- if eyebrow_text != blank -%}
           <p class="rc-hero-banner__eyebrow">
@@ -124,6 +158,94 @@
       "id": "alt_text",
       "label": "Image alt text",
       "default": "Ronnie Coleman hero banner"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Second image"
+    },
+    {
+      "type": "range",
+      "id": "image_overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "%",
+      "label": "Image overlay opacity",
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "image_height",
+      "options": [
+        { "value": "adapt", "label": "Adapt to first image" },
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ],
+      "default": "medium",
+      "label": "Banner height",
+      "info": "For best results, use an image with a 16:9 aspect ratio."
+    },
+    {
+      "type": "select",
+      "id": "desktop_content_position",
+      "options": [
+        { "value": "top-left", "label": "Top left" },
+        { "value": "top-center", "label": "Top center" },
+        { "value": "top-right", "label": "Top right" },
+        { "value": "middle-left", "label": "Middle left" },
+        { "value": "middle-center", "label": "Middle center" },
+        { "value": "middle-right", "label": "Middle right" },
+        { "value": "bottom-left", "label": "Bottom left" },
+        { "value": "bottom-center", "label": "Bottom center" },
+        { "value": "bottom-right", "label": "Bottom right" }
+      ],
+      "default": "middle-center",
+      "label": "Desktop content position"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_text_box",
+      "default": true,
+      "label": "Show container on desktop"
+    },
+    {
+      "type": "select",
+      "id": "desktop_content_alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center",
+      "label": "Desktop content alignment"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "select",
+      "id": "image_behavior",
+      "options": [
+        { "value": "none", "label": "No animation" },
+        { "value": "ambient", "label": "Ambient movement" },
+        { "value": "fixed", "label": "Fixed background position" },
+        { "value": "zoom-in", "label": "Zoom in on scroll" }
+      ],
+      "default": "none",
+      "label": "Image behavior"
     },
     {
       "type": "header",
@@ -242,6 +364,33 @@
       "step": 5,
       "unit": "%",
       "default": 35
+    },
+    {
+      "type": "header",
+      "content": "Mobile layout"
+    },
+    {
+      "type": "select",
+      "id": "mobile_content_alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center",
+      "label": "Mobile content alignment"
+    },
+    {
+      "type": "checkbox",
+      "id": "stack_images_on_mobile",
+      "default": true,
+      "label": "Stack images on mobile"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_text_below",
+      "default": true,
+      "label": "Show container on mobile"
     }
   ],
   "presets": [

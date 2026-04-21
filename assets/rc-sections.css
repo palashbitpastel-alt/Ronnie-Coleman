@@ -1623,3 +1623,184 @@
   }
 }
 
+/* =====================================================
+ * rc-hero-banner: ported image-banner options
+ *
+ * Adds layout / behavior modifiers ported from Dawn's
+ * image-banner onto rc-hero-banner while preserving the
+ * existing __frame / __media / __content / __cta DOM.
+ * All rules are scoped under .rc-hero-banner (or the
+ * per-instance .section-rc-hero-banner-... wrapper).
+ * ===================================================== */
+
+/* --- Banner height modifiers (image_height) --- */
+.rc-hero-banner--h-small .rc-hero-banner__frame {
+  aspect-ratio: auto;
+  min-height: 28rem;
+}
+.rc-hero-banner--h-medium .rc-hero-banner__frame {
+  aspect-ratio: auto;
+  min-height: 39rem;
+}
+.rc-hero-banner--h-large .rc-hero-banner__frame {
+  aspect-ratio: auto;
+  min-height: 56rem;
+}
+.rc-hero-banner--h-adapt .rc-hero-banner__frame {
+  aspect-ratio: auto;
+  min-height: auto;
+}
+
+/* Ensure __frame / __wrapper can anchor absolutely-positioned content */
+.rc-hero-banner__frame {
+  position: relative;
+}
+.rc-hero-banner__wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  z-index: 2;
+}
+
+/* --- 9-position desktop content placement (desktop_content_position) --- */
+.rc-hero-banner--content-position-top-left .rc-hero-banner__wrapper    { align-items: flex-start; justify-content: flex-start; }
+.rc-hero-banner--content-position-top-center .rc-hero-banner__wrapper  { align-items: flex-start; justify-content: center; }
+.rc-hero-banner--content-position-top-right .rc-hero-banner__wrapper   { align-items: flex-start; justify-content: flex-end; }
+.rc-hero-banner--content-position-middle-left .rc-hero-banner__wrapper   { align-items: center; justify-content: flex-start; }
+.rc-hero-banner--content-position-middle-center .rc-hero-banner__wrapper { align-items: center; justify-content: center; }
+.rc-hero-banner--content-position-middle-right .rc-hero-banner__wrapper  { align-items: center; justify-content: flex-end; }
+.rc-hero-banner--content-position-bottom-left .rc-hero-banner__wrapper   { align-items: flex-end; justify-content: flex-start; }
+.rc-hero-banner--content-position-bottom-center .rc-hero-banner__wrapper { align-items: flex-end; justify-content: center; }
+.rc-hero-banner--content-position-bottom-right .rc-hero-banner__wrapper  { align-items: flex-end; justify-content: flex-end; }
+
+/* When these modifier classes drive layout, the old absolute hard-
+   coded left/top values on .rc-hero-banner__content would fight with
+   the flex parent. Reset position here so flex takes over. */
+.rc-hero-banner[class*="rc-hero-banner--content-position-"] .rc-hero-banner__content {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  transform: none;
+  max-width: 45%;
+}
+
+/* --- Desktop content alignment (desktop_content_alignment) --- */
+.rc-hero-banner--align-left .rc-hero-banner__content {
+  text-align: left;
+  align-items: flex-start;
+}
+.rc-hero-banner--align-center .rc-hero-banner__content {
+  text-align: center;
+  align-items: center;
+}
+.rc-hero-banner--align-right .rc-hero-banner__content {
+  text-align: right;
+  align-items: flex-end;
+}
+
+/* --- Mobile content alignment (mobile_content_alignment) --- */
+@media screen and (max-width: 749px) {
+  .rc-hero-banner--mobile-align-left .rc-hero-banner__content {
+    text-align: left;
+    align-items: flex-start;
+  }
+  .rc-hero-banner--mobile-align-center .rc-hero-banner__content {
+    text-align: center;
+    align-items: center;
+  }
+  .rc-hero-banner--mobile-align-right .rc-hero-banner__content {
+    text-align: right;
+    align-items: flex-end;
+  }
+}
+
+/* --- Show container on desktop (show_text_box=false) --- */
+@media screen and (min-width: 750px) {
+  .rc-hero-banner--desktop-transparent .rc-hero-banner__content {
+    background: transparent;
+    box-shadow: none;
+  }
+}
+
+/* --- Show container on mobile / mobile-bottom (show_text_below=true) --- */
+@media screen and (max-width: 749px) {
+  .rc-hero-banner--mobile-bottom .rc-hero-banner__frame {
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: auto;
+  }
+  .rc-hero-banner--mobile-bottom .rc-hero-banner__wrapper {
+    position: static;
+    padding: 1.5rem 0;
+  }
+  .rc-hero-banner--mobile-bottom .rc-hero-banner__content {
+    position: static;
+    top: auto;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    transform: none;
+    width: auto;
+  }
+}
+
+/* --- Stacked images when image_2 is set --- */
+.rc-hero-banner--stacked .rc-hero-banner__media {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+.rc-hero-banner__image--half {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  margin-left: 0;
+}
+
+@media screen and (max-width: 749px) {
+  .rc-hero-banner--stacked .rc-hero-banner__media {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+}
+
+/* --- Image behaviors (animate-- modifier classes on __media) --- */
+.rc-hero-banner__media.animate--ambient .rc-hero-banner__image {
+  animation: rc-hero-ambient 20s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+@keyframes rc-hero-ambient {
+  from { transform: scale(1.05) translate(0, 0); }
+  to   { transform: scale(1.15) translate(2%, -2%); }
+}
+
+.rc-hero-banner__media.animate--fixed {
+  position: relative;
+}
+.rc-hero-banner__media.animate--fixed .rc-hero-banner__image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  object-fit: cover;
+}
+
+.rc-hero-banner__media.animate--zoom-in .rc-hero-banner__image {
+  animation: rc-hero-zoom 1.4s ease-out forwards;
+}
+@keyframes rc-hero-zoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rc-hero-banner__media.animate--ambient .rc-hero-banner__image,
+  .rc-hero-banner__media.animate--zoom-in .rc-hero-banner__image {
+    animation: none;
+  }
+}
